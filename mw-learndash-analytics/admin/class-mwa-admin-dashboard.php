@@ -68,6 +68,19 @@ class MWA_Admin_Dashboard {
         <div class="wrap mwa-dashboard">
             <h1>📊 MW LearnDash Analytics</h1>
 
+            <!-- Tab Navigation -->
+            <?php
+            $active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'analytics';
+            ?>
+            <h2 class="nav-tab-wrapper">
+                <a href="?page=mwa-analytics&tab=analytics&days=<?php echo $days; ?>" class="nav-tab <?php echo $active_tab === 'analytics' ? 'nav-tab-active' : ''; ?>">📊 Analytics</a>
+                <a href="?page=mwa-analytics&tab=surveys&days=<?php echo $days; ?>" class="nav-tab <?php echo $active_tab === 'surveys' ? 'nav-tab-active' : ''; ?>">📝 Survey Results</a>
+            </h2>
+
+            <?php if ( $active_tab === 'surveys' ) : ?>
+                <?php MWA_Admin_Surveys::render( $days ); ?>
+            <?php else : ?>
+
             <!-- Period Selector -->
             <div class="mwa-period-selector">
                 <form method="get">
@@ -226,7 +239,6 @@ class MWA_Admin_Dashboard {
                 </table>
                 <?php endif; ?>
             </div>
-        </div>
 
         <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -277,6 +289,8 @@ class MWA_Admin_Dashboard {
             });
         });
         </script>
+        <?php endif; // end analytics tab ?>
+        </div>
         <?php
     }
 
