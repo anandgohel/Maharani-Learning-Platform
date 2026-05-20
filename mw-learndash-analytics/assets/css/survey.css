@@ -1,0 +1,323 @@
+/* MW LearnDash Analytics — Survey Styles */
+
+/* ── Lesson Micro-Survey ── */
+.mwa-micro-survey {
+    margin: 40px 0 20px;
+    border-top: 2px solid #e2e8f0;
+    padding-top: 24px;
+}
+
+.mwa-survey-inner {
+    background: linear-gradient(135deg, #fafbff 0%, #f0f4ff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 560px;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.06);
+    transition: box-shadow 0.3s ease;
+}
+
+.mwa-survey-inner:hover {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
+}
+
+.mwa-survey-title {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* ── Star Rating ── */
+.mwa-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.mwa-star {
+    font-size: 32px;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.15s ease;
+    user-select: none;
+    line-height: 1;
+}
+
+.mwa-star:hover {
+    transform: scale(1.2);
+}
+
+.mwa-star-active {
+    color: #f59e0b;
+}
+
+.mwa-rating-text {
+    margin-left: 12px;
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.mwa-rating-text.mwa-error {
+    color: #ef4444;
+}
+
+/* ── Comment Field ── */
+.mwa-comment-wrap {
+    margin-bottom: 16px;
+}
+
+.mwa-comment,
+.mwa-cs-textarea {
+    width: 100%;
+    min-height: 72px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.mwa-comment:focus,
+.mwa-cs-textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* ── Submit Button ── */
+.mwa-submit-btn {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.mwa-submit-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
+.mwa-submit-btn:active {
+    transform: translateY(0);
+}
+
+.mwa-submit-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.mwa-btn-ready {
+    animation: mwa-pulse 0.4s ease;
+}
+
+@keyframes mwa-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ── Thanks Message ── */
+.mwa-survey-thanks {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 10px;
+    color: #065f46;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ── Submitted State ── */
+.mwa-survey-submitted .mwa-survey-inner {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    border-color: #a7f3d0;
+}
+
+/* ── Course Survey ── */
+.mwa-course-survey {
+    background: linear-gradient(135deg, #fafbff 0%, #f0f4ff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 36px 40px;
+    margin: 40px 0;
+    max-width: 700px;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+}
+
+.mwa-cs-title {
+    margin: 0 0 8px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.mwa-cs-subtitle {
+    margin: 0 0 28px;
+    font-size: 15px;
+    color: #64748b;
+}
+
+.mwa-cs-question {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.mwa-cs-question:last-of-type {
+    border-bottom: none;
+}
+
+.mwa-cs-question label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 10px;
+}
+
+.mwa-cs-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.mwa-cs-select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* ── Confidence Scale ── */
+.mwa-confidence-scale {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mwa-scale-label {
+    font-size: 12px;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+.mwa-scale-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.mwa-scale-btns button {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.mwa-scale-btns button:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+}
+
+.mwa-scale-btns button.mwa-scale-active {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+}
+
+/* ── NPS Slider ── */
+.mwa-nps-wrap {
+    max-width: 100%;
+}
+
+.mwa-nps-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #6366f1 50%, #e2e8f0 50%);
+    outline: none;
+    cursor: pointer;
+}
+
+.mwa-nps-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #6366f1;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.mwa-nps-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.mwa-nps-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.mwa-nps-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #6366f1;
+}
+
+/* ── Course Submit Button ── */
+.mwa-cs-submit-btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-top: 8px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .mwa-survey-inner {
+        padding: 20px;
+    }
+    .mwa-course-survey {
+        padding: 24px 20px;
+    }
+    .mwa-star {
+        font-size: 28px;
+    }
+    .mwa-confidence-scale {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
