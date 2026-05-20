@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{COURSE_DESCRIPTION_META}}">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>{{COURSE_TITLE}} — Maharani Weddings Academy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .course-hero {
+      background: var(--gray-900);
+      position: relative;
+      overflow: hidden;
+    }
+    .course-hero__bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 60%, rgba(200,0,107,0.28) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 30%, rgba(212,160,23,0.12) 0%, transparent 45%);
+      background-color: #12060D;
+    }
+    .course-hero__pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(200,0,107,0.05) 0px, rgba(200,0,107,0.05) 1px, transparent 1px, transparent 22px),
+        repeating-linear-gradient(-45deg, rgba(200,0,107,0.05) 0px, rgba(200,0,107,0.05) 1px, transparent 1px, transparent 22px);
+      background-size: 22px 22px;
+    }
+    .course-hero__inner {
+      position: relative;
+      z-index: 1;
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 60px var(--space-10) 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-10);
+      align-items: center;
+    }
+    .course-hero__breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: var(--space-4);
+      letter-spacing: 0.02em;
+      flex-wrap: wrap;
+    }
+    .course-hero__breadcrumb a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+    }
+    .course-hero__breadcrumb a:hover { color: rgba(255,255,255,0.85); }
+    .course-hero__breadcrumb-sep { opacity: 0.4; }
+
+    .course-hero__eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--pink-300);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .course-hero__title {
+      font-family: var(--font-display);
+      font-size: 44px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-4);
+    }
+    .course-hero__title em {
+      color: #FF99C3;
+      font-style: italic;
+    }
+    .course-hero__desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.65;
+      max-width: 520px;
+      margin-bottom: var(--space-7);
+    }
+    .course-hero__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      margin-bottom: var(--space-7);
+      flex-wrap: wrap;
+    }
+    .course-hero__meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.7);
+    }
+    .course-hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .btn-on-dark {
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.06);
+    }
+    .btn-on-dark:hover {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border-color: rgba(255,255,255,0.35);
+    }
+
+    /* Progress ring */
+    .course-hero__ring {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .ring-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+    }
+    .ring-container svg { transform: rotate(-90deg); }
+    .ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .ring-label__num {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 600;
+      color: white;
+      line-height: 1;
+    }
+    .ring-label__unit {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
+    .ring-stats {
+      display: flex;
+      gap: var(--space-4);
+      text-align: center;
+    }
+    .ring-stat { display: flex; flex-direction: column; gap: 3px; }
+    .ring-stat__num {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+    }
+    .ring-stat__label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* Content layout */
+    .course-body {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-10) var(--space-16);
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .lesson-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .lesson-card__header {
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .lesson-card__title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    .lesson-card__progress-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+    .lesson-card__body { padding: var(--space-3); }
+
+    .lesson-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      transition: background var(--transition-fast);
+      text-decoration: none;
+      color: inherit;
+    }
+    .lesson-row:hover { background: var(--gray-50); color: inherit; }
+    .lesson-row.active { background: var(--pink-50); }
+    .lesson-row.active .lesson-row__num { background: var(--pink-600); color: white; }
+    .lesson-row.active .lesson-row__title { color: var(--pink-700); }
+    .lesson-row[aria-disabled="true"] {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .lesson-row[aria-disabled="true"]:hover { background: transparent; }
+
+    .lesson-row__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--transition-fast);
+    }
+    .lesson-row__num--done {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    .lesson-row__content { flex: 1; min-width: 0; }
+    .lesson-row__title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-800);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color var(--transition-fast);
+    }
+    .lesson-row__meta {
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .lesson-row__right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-shrink: 0;
+    }
+    .lesson-row__type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      background: var(--gray-100);
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+    .lesson-row__type--quiz {
+      color: var(--gold-800);
+      background: var(--gold-50);
+    }
+
+    .lesson-group-header {
+      padding: var(--space-3) var(--space-4) var(--space-2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-top: var(--space-2);
+    }
+
+    /* Sidebar */
+    .course-sidebar {
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+    }
+    .sidebar-widget {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: var(--space-5);
+    }
+    .sidebar-widget__header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .sidebar-widget__title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-700);
+      letter-spacing: 0.02em;
+    }
+    .sidebar-widget__body { padding: var(--space-4) var(--space-5); }
+
+    .cert-preview {
+      background: linear-gradient(135deg, var(--pink-50), var(--blush-200));
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      text-align: center;
+      border: 1.5px dashed var(--pink-200);
+      margin-bottom: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+    .cert-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(200,0,107,0.04) 0px, rgba(200,0,107,0.04) 1px, transparent 1px, transparent 14px),
+        repeating-linear-gradient(-45deg, rgba(200,0,107,0.04) 0px, rgba(200,0,107,0.04) 1px, transparent 1px, transparent 14px);
+      background-size: 14px 14px;
+    }
+    .cert-preview__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-2);
+      position: relative;
+      box-shadow: 0 3px 12px rgba(212,160,23,0.4);
+    }
+    .cert-preview__title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--space-1);
+      position: relative;
+    }
+    .cert-preview__sub {
+      font-size: 11px;
+      color: var(--gray-600);
+      position: relative;
+    }
+
+    .reward-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: var(--space-3) 0;
+    }
+    .reward-row + .reward-row { border-top: 1px solid var(--gray-100); }
+    .reward-row__icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: white;
+    }
+
+    @media (max-width: 900px) {
+      .course-hero__inner {
+        grid-template-columns: 1fr;
+        padding: 36px var(--space-5) 32px;
+      }
+      .course-hero__ring { display: none; }
+      .course-body {
+        grid-template-columns: 1fr;
+        padding: var(--space-6) var(--space-5) var(--space-10);
+      }
+      .course-sidebar { position: static; }
+      .course-hero__title { font-size: 30px; }
+    }
+  </style>
+</head>
+<body class="page-bg">
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- ===== NAV ===== -->
+  <nav class="mw-nav" aria-label="Main">
+    <button class="mw-nav__hamburger" data-mw-drawer-open aria-label="Open navigation menu" aria-controls="mw-drawer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <a href="{{HOME_URL}}" class="mw-nav__logo">
+      <span class="mw-nav__logo-script">Maharani</span>
+      <span class="mw-nav__logo-sub">Academy</span>
+    </a>
+    <div class="mw-nav__divider"></div>
+    <div class="mw-nav__links">
+      <a href="dashboard.html" class="mw-nav__link">My Dashboard</a>
+      <a href="{{TRAIL_URL}}" class="mw-nav__link">My Trail</a>
+      <a href="{{CERTIFICATIONS_URL}}" class="mw-nav__link">Certifications</a>
+      <a href="{{COMMUNITY_URL}}" class="mw-nav__link">Community</a>
+    </div>
+    <div class="mw-nav__right">
+      <div class="mw-streak" aria-label="{{STREAK_DAYS}} day streak">
+        <svg class="mw-streak__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14a8 8 0 0 0 16 0c0-4.18-2.13-7.93-6.5-13.33z"/></svg>
+        {{STREAK_DAYS}} day streak
+      </div>
+      <div class="mw-xp-badge" aria-label="{{XP_CURRENT}} XP earned">
+        <div class="mw-xp-badge__icon" aria-hidden="true">★</div>
+        {{XP_CURRENT}} XP
+      </div>
+      <a href="{{ACCOUNT_URL}}" class="mw-avatar" aria-label="My account">{{USER_INITIAL}}</a>
+    </div>
+  </nav>
+
+  <!-- ===== DRAWER ===== -->
+  <div class="mw-drawer-backdrop" data-mw-drawer-backdrop></div>
+  <aside class="mw-drawer" data-mw-drawer id="mw-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="mw-drawer__header">
+      <div style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-family:var(--font-display); font-size:24px; font-style:italic; color:var(--gray-900);">Maharani</span>
+        <span style="font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--gray-500); margin-top:2px;">Academy</span>
+      </div>
+      <button class="mw-drawer__close" data-mw-drawer-close aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mw-drawer__user">
+      <div class="mw-avatar" aria-hidden="true">{{USER_INITIAL}}</div>
+      <div class="mw-drawer__user-meta">
+        <span class="mw-drawer__user-name">{{USER_DISPLAY_NAME}}</span>
+        <span class="mw-drawer__user-stat">{{XP_CURRENT}} XP · {{STREAK_DAYS}} day streak</span>
+      </div>
+    </div>
+    <div class="mw-drawer__section">
+      <div class="mw-drawer__section-label">This course</div>
+      <a href="#course-lessons" class="mw-drawer__link active" data-mw-drawer-close>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Lessons
+      </a>
+    </div>
+    <div class="mw-drawer__section">
+      <div class="mw-drawer__section-label">Learn</div>
+      <a href="dashboard.html" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        My Dashboard
+      </a>
+      <a href="{{TRAIL_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7c4 0 6 5 0 10"/></svg>
+        My Trail
+      </a>
+      <a href="{{CERTIFICATIONS_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
+        Certifications
+      </a>
+    </div>
+    <div class="mw-drawer__section">
+      <a href="{{ACCOUNT_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My account
+      </a>
+      <a href="{{LOGOUT_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+    </div>
+  </aside>
+
+  <main class="page-wrapper" id="main">
+
+    <!-- ===== HERO ===== -->
+    <div class="course-hero">
+      <div class="course-hero__bg"></div>
+      <div class="course-hero__pattern"></div>
+      <div class="course-hero__inner">
+        <div class="anim-fade-in-up">
+          <nav class="course-hero__breadcrumb" aria-label="Breadcrumb">
+            <a href="dashboard.html">My Dashboard</a>
+            <span class="course-hero__breadcrumb-sep" aria-hidden="true">›</span>
+            <a href="{{COURSES_INDEX_URL}}">Courses</a>
+            <span class="course-hero__breadcrumb-sep" aria-hidden="true">›</span>
+            <span style="color:rgba(255,255,255,0.85);">{{COURSE_SHORT_NAME}}</span>
+          </nav>
+
+          <div class="course-hero__eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
+            {{COURSE_EYEBROW}}
+          </div>
+          <h1 class="course-hero__title">{{COURSE_TITLE_LINE_1}}<br><em>{{COURSE_TITLE_LINE_2}}</em></h1>
+          <p class="course-hero__desc">{{COURSE_DESCRIPTION}}</p>
+
+          <div class="course-hero__meta">
+            <div class="course-hero__meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              {{COURSE_LESSON_COUNT}} lessons
+            </div>
+            <div class="course-hero__meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              ~{{COURSE_TOTAL_DURATION}} total
+            </div>
+            <div class="course-hero__meta-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Earns {{COURSE_XP_REWARD}} XP + Badge
+            </div>
+          </div>
+
+          <div class="course-hero__actions">
+            <a href="lesson.html" class="btn btn-primary btn--lg">
+              {{HERO_CTA_LABEL}}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a href="dashboard.html" class="btn btn-on-dark btn--lg">← Back to dashboard</a>
+          </div>
+        </div>
+
+        <div class="course-hero__ring anim-fade-in-up anim-delay-2">
+          <div class="ring-container" role="img" aria-label="{{COURSE_PROGRESS_PCT}} percent complete">
+            <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">
+              <circle cx="70" cy="70" r="58" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+              <!-- ANTIGRAVITY: stroke-dashoffset = 364.4 * (1 - pct/100). At 40% = 218.6 -->
+              <circle cx="70" cy="70" r="58" fill="none" stroke="url(#ring-grad)" stroke-width="10"
+                stroke-dasharray="364.4"
+                stroke-dashoffset="{{COURSE_RING_OFFSET}}"
+                stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#C8006B"/>
+                  <stop offset="100%" stop-color="#F5C330"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="ring-label">
+              <span class="ring-label__num">{{COURSE_PROGRESS_PCT}}%</span>
+              <span class="ring-label__unit">complete</span>
+            </div>
+          </div>
+          <div class="ring-stats">
+            <div class="ring-stat">
+              <span class="ring-stat__num">{{LESSONS_DONE_IN_COURSE}}</span>
+              <span class="ring-stat__label">Done</span>
+            </div>
+            <div class="ring-stat" style="border-left:1px solid rgba(255,255,255,0.14); padding-left:16px;">
+              <span class="ring-stat__num">{{LESSONS_LEFT_IN_COURSE}}</span>
+              <span class="ring-stat__label">Left</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BODY ===== -->
+    <div class="course-body" id="course-lessons">
+      <div class="anim-fade-in-up">
+
+        <!-- Course progress -->
+        <div style="background:white; border:1px solid var(--gray-200); border-radius:var(--radius-xl); padding:var(--space-5) var(--space-6); margin-bottom:var(--space-6); display:flex; align-items:center; gap:var(--space-5);">
+          <div style="flex:1; min-width: 0;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--gray-600); margin-bottom:8px;">
+              <span>Course progress</span>
+              <span style="color:var(--pink-600);">{{LESSONS_DONE_IN_COURSE}} of {{COURSE_LESSON_COUNT}} lessons complete</span>
+            </div>
+            <div class="progress-bar" style="height:8px;" role="progressbar" aria-valuenow="{{COURSE_PROGRESS_PCT}}" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar__fill" style="width:{{COURSE_PROGRESS_PCT}}%;"></div>
+            </div>
+          </div>
+          <div style="text-align:right; flex-shrink:0;">
+            <div style="font-family:var(--font-display); font-size:28px; font-weight:600; color:var(--pink-600); line-height:1;">{{COURSE_PROGRESS_PCT}}%</div>
+            <div style="font-size:11px; color:var(--gray-600); font-weight:600; letter-spacing:0.05em; text-transform:uppercase;">Complete</div>
+          </div>
+        </div>
+
+        <!-- Lessons list -->
+        <section class="lesson-card" aria-labelledby="lessons-heading">
+          <div class="lesson-card__header">
+            <h2 class="lesson-card__title" id="lessons-heading">Course lessons</h2>
+            <span class="lesson-card__progress-text">{{LESSONS_DONE_IN_COURSE}} completed · {{LESSONS_LEFT_IN_COURSE}} remaining</span>
+          </div>
+          <div class="lesson-card__body">
+
+            <!-- ============================================================
+                 ANTIGRAVITY: Loop the modules and lessons from LearnDash.
+                 Below are the four lesson-row variants — copy/paste these
+                 patterns and fill from `ld_get_course_lessons_list()`:
+                   1. DONE     → .lesson-row__num--done + checkmark + .pill--green
+                   2. ACTIVE   → .lesson-row.active (current lesson)
+                   3. UPCOMING → .lesson-row with number, no done/active
+                   4. LOCKED   → .lesson-row[aria-disabled="true"] + lock icon
+                 Each lesson links to lesson.html?lesson_id=NNN.
+                 ============================================================ -->
+
+            <div class="lesson-group-header">{{MODULE_1_NAME}}</div>
+
+            <!-- DONE -->
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num lesson-row__num--done" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_1_1_TITLE}}</div>
+                <div class="lesson-row__meta">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  {{LESSON_1_1_DURATION}} · Video
+                </div>
+              </div>
+              <div class="lesson-row__right">
+                <span class="pill pill--green">Done</span>
+              </div>
+            </a>
+
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num lesson-row__num--done" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_1_2_TITLE}}</div>
+                <div class="lesson-row__meta">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  {{LESSON_1_2_DURATION}} · Video
+                </div>
+              </div>
+              <div class="lesson-row__right">
+                <span class="pill pill--green">Done</span>
+              </div>
+            </a>
+
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num lesson-row__num--done" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_1_3_TITLE}}</div>
+                <div class="lesson-row__meta">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  {{LESSON_1_3_DURATION}} · Video
+                </div>
+              </div>
+              <div class="lesson-row__right">
+                <span class="pill pill--green">Done</span>
+              </div>
+            </a>
+
+            <div class="lesson-group-header">{{MODULE_2_NAME}}</div>
+
+            <!-- ACTIVE -->
+            <a href="lesson.html" class="lesson-row active" aria-current="page">
+              <div class="lesson-row__num" style="background:var(--pink-600); color:white;" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="white" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_2_1_TITLE}}</div>
+                <div class="lesson-row__meta" style="color:var(--pink-500);">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  {{LESSON_2_1_DURATION}} · Currently watching
+                </div>
+              </div>
+              <div class="lesson-row__right">
+                <span class="pill pill--pink">Active</span>
+              </div>
+            </a>
+
+            <!-- UPCOMING -->
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num">{{LESSON_2_2_INDEX}}</div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_2_2_TITLE}}</div>
+                <div class="lesson-row__meta">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  {{LESSON_2_2_DURATION}} · Video
+                </div>
+              </div>
+            </a>
+
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num">{{LESSON_2_3_INDEX}}</div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_2_3_TITLE}}</div>
+                <div class="lesson-row__meta">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg>
+                  Quiz
+                </div>
+              </div>
+              <div class="lesson-row__right">
+                <span class="lesson-row__type lesson-row__type--quiz">Quiz</span>
+              </div>
+            </a>
+
+            <div class="lesson-group-header">{{MODULE_3_NAME}}</div>
+
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num">{{LESSON_3_1_INDEX}}</div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_3_1_TITLE}}</div>
+                <div class="lesson-row__meta">{{LESSON_3_1_DURATION}} · Video</div>
+              </div>
+            </a>
+            <a href="lesson.html" class="lesson-row">
+              <div class="lesson-row__num">{{LESSON_3_2_INDEX}}</div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_3_2_TITLE}}</div>
+                <div class="lesson-row__meta">{{LESSON_3_2_DURATION}} · Video</div>
+              </div>
+            </a>
+
+            <div class="lesson-group-header">{{MODULE_4_NAME}}</div>
+
+            <!-- LOCKED -->
+            <span class="lesson-row" aria-disabled="true" role="link" tabindex="-1">
+              <div class="lesson-row__num" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <div class="lesson-row__content">
+                <div class="lesson-row__title">{{LESSON_FINAL_TITLE}}</div>
+                <div class="lesson-row__meta">Complete all lessons to unlock</div>
+              </div>
+              <div class="lesson-row__right">
+                <span class="lesson-row__type lesson-row__type--quiz">Quiz</span>
+              </div>
+            </span>
+
+          </div>
+        </section>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="course-sidebar anim-fade-in-up anim-delay-2" aria-label="Course rewards">
+
+        <div class="sidebar-widget">
+          <div class="sidebar-widget__header">
+            <h2 class="sidebar-widget__title">Your certificate</h2>
+          </div>
+          <div class="sidebar-widget__body">
+            <div class="cert-preview">
+              <div class="cert-preview__icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
+              </div>
+              <div class="cert-preview__title">{{CERTIFICATE_TITLE}}</div>
+              <div class="cert-preview__sub">{{CERTIFICATE_SUBTITLE}}</div>
+            </div>
+            <p style="font-size:13px; color:var(--gray-600); line-height:1.5; margin-bottom:var(--space-4);">
+              Complete all {{COURSE_LESSON_COUNT}} lessons and pass the final quiz to earn your official certification.
+            </p>
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--gray-600); margin-bottom:6px;">
+              <span>Progress</span>
+              <span style="color:var(--pink-600);">{{COURSE_PROGRESS_PCT}}%</span>
+            </div>
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{COURSE_PROGRESS_PCT}}" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar__fill" style="width:{{COURSE_PROGRESS_PCT}}%;"></div>
+            </div>
+            <a href="certificate.html" class="btn btn-ghost btn--sm" style="margin-top: 14px; width:100%;">Preview certificate</a>
+          </div>
+        </div>
+
+        <div class="sidebar-widget">
+          <div class="sidebar-widget__header">
+            <h2 class="sidebar-widget__title">Complete this course to earn</h2>
+          </div>
+          <div class="sidebar-widget__body" style="padding-top: 4px;">
+            <div class="reward-row">
+              <div class="reward-row__icon" style="background:linear-gradient(135deg,#F5C330,#D4A017);" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:var(--gray-800);">{{COURSE_BADGE_NAME}}</div>
+                <div style="font-size:11px; color:var(--gray-600);">Displayed on your profile</div>
+              </div>
+            </div>
+            <div class="reward-row">
+              <div class="reward-row__icon" style="background: var(--pink-50); color:var(--pink-600); border:2px solid var(--pink-200);" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:var(--gray-800);">+{{COURSE_XP_REWARD}} XP</div>
+                <div style="font-size:11px; color:var(--gray-600);">Advances your Academy level</div>
+              </div>
+            </div>
+            <div class="reward-row">
+              <div class="reward-row__icon" style="background: var(--color-info-bg); color:var(--color-info); border:2px solid #BDD3F3;" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div style="font-size:13px; font-weight:600; color:var(--gray-800);">Official certificate</div>
+                <div style="font-size:11px; color:var(--gray-600);">Downloadable PDF</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <script src="academy.js"></script>
+</body>
+</html>

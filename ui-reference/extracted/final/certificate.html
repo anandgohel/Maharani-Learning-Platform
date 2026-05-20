@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Certificate — {{COURSE_TITLE}} — Maharani Weddings Academy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: var(--gray-100);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+
+    .cert-actions {
+      display: flex;
+      gap: 12px;
+      max-width: 1100px;
+      width: 100%;
+      margin-bottom: 24px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .cert {
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 297 / 210; /* A4 landscape */
+      background: #FBF7F1;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      text-align: center;
+    }
+
+    .cert::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border: 2px solid var(--gold-600);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .cert::after {
+      content: '';
+      position: absolute;
+      inset: 30px;
+      border: 1px solid var(--gold-400);
+      pointer-events: none;
+    }
+
+    /* Decorative pattern */
+    .cert__pattern {
+      position: absolute;
+      inset: 30px;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(200,0,107,0.04) 0px, rgba(200,0,107,0.04) 1px, transparent 1px, transparent 28px),
+        repeating-linear-gradient(-45deg, rgba(200,0,107,0.04) 0px, rgba(200,0,107,0.04) 1px, transparent 1px, transparent 28px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+
+    /* Corner mandalas */
+    .cert__corner {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,0,107,0.2);
+      pointer-events: none;
+    }
+    .cert__corner::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,160,23,0.3);
+    }
+    .cert__corner::after {
+      content: '';
+      position: absolute;
+      inset: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,0,107,0.2);
+    }
+    .cert__corner--tl { top: 50px; left: 50px; }
+    .cert__corner--tr { top: 50px; right: 50px; }
+    .cert__corner--bl { bottom: 50px; left: 50px; }
+    .cert__corner--br { bottom: 50px; right: 50px; }
+
+    .cert__brand {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .cert__brand-script {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--pink-700);
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    .cert__brand-sub {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold-700);
+      margin-top: 8px;
+    }
+    .cert__brand-divider {
+      width: 80px;
+      height: 1px;
+      background: var(--gold-600);
+      margin-top: 16px;
+      position: relative;
+    }
+    .cert__brand-divider::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--gold-600);
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .cert__label {
+      position: relative;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 16px;
+    }
+    .cert__name {
+      position: relative;
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 500;
+      color: var(--gray-900);
+      line-height: 1.1;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .cert__underline {
+      position: relative;
+      width: 280px;
+      height: 1px;
+      background: var(--gray-400);
+      margin-bottom: 28px;
+    }
+    .cert__copy {
+      position: relative;
+      font-size: 14px;
+      color: var(--gray-700);
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .cert__course {
+      position: relative;
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--pink-700);
+      font-style: italic;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    .cert__footer {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 48px;
+      width: 100%;
+      max-width: 700px;
+      margin-top: auto;
+    }
+    .cert__sign-block {
+      flex: 1;
+      text-align: center;
+    }
+    .cert__signature {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-style: italic;
+      color: var(--gray-900);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gray-400);
+      margin-bottom: 8px;
+    }
+    .cert__sign-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+    }
+    .cert__seal {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 16px rgba(212,160,23,0.5);
+      flex-shrink: 0;
+      position: relative;
+    }
+    .cert__seal::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(255,255,255,0.6);
+    }
+
+    .cert__meta {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      font-weight: 600;
+    }
+
+    @media (max-width: 700px) {
+      .cert {
+        padding: 24px;
+      }
+      .cert__name { font-size: 32px; }
+      .cert__course { font-size: 20px; }
+      .cert__copy { font-size: 12px; }
+      .cert__corner { display: none; }
+      .cert__footer { gap: 16px; }
+      .cert__signature { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cert-actions no-print">
+    <a href="course.html" class="btn btn-ghost">← Back to course</a>
+    <button onclick="window.print()" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="6 9 6 2 18 2 18 9"/>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <main class="cert" role="document" aria-label="Certificate">
+    <div class="cert__pattern" aria-hidden="true"></div>
+    <div class="cert__corner cert__corner--tl" aria-hidden="true"></div>
+    <div class="cert__corner cert__corner--tr" aria-hidden="true"></div>
+    <div class="cert__corner cert__corner--bl" aria-hidden="true"></div>
+    <div class="cert__corner cert__corner--br" aria-hidden="true"></div>
+
+    <div class="cert__brand">
+      <span class="cert__brand-script">Maharani</span>
+      <span class="cert__brand-sub">Weddings Academy</span>
+      <div class="cert__brand-divider" aria-hidden="true"></div>
+    </div>
+
+    <div class="cert__label">Certificate of Completion</div>
+    <h1 class="cert__name">{{RECIPIENT_NAME}}</h1>
+    <div class="cert__underline" aria-hidden="true"></div>
+
+    <p class="cert__copy">
+      has successfully completed all required lessons and assessments<br>
+      for the certification course
+    </p>
+    <p class="cert__course">{{COURSE_TITLE}}</p>
+
+    <div class="cert__footer">
+      <div class="cert__sign-block">
+        <div class="cert__signature">{{ISSUER_SIGNATURE}}</div>
+        <div class="cert__sign-label">{{ISSUER_TITLE}}</div>
+      </div>
+      <div class="cert__seal" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="8" r="6"/>
+          <path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/>
+        </svg>
+      </div>
+      <div class="cert__sign-block">
+        <div class="cert__signature">{{ISSUE_DATE}}</div>
+        <div class="cert__sign-label">Date issued</div>
+      </div>
+    </div>
+
+    <div class="cert__meta">
+      <span>Certificate ID · {{CERTIFICATE_ID}}</span>
+      <span>Verify at {{VERIFICATION_URL}}</span>
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>Maharani Academy — Production Handoff v2.0</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: var(--gray-50); }
+    .idx-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .idx-hero {
+      background: var(--gray-900);
+      color: white;
+      padding: 40px 44px;
+      border-radius: var(--radius-2xl);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .idx-hero__bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 30%, rgba(200,0,107,0.3) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 90%, rgba(212,160,23,0.15) 0%, transparent 50%);
+      background-color: #12060D;
+    }
+    .idx-hero__pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(200,0,107,0.05) 0px, rgba(200,0,107,0.05) 1px, transparent 1px, transparent 26px),
+        repeating-linear-gradient(-45deg, rgba(200,0,107,0.05) 0px, rgba(200,0,107,0.05) 1px, transparent 1px, transparent 26px);
+      background-size: 26px 26px;
+    }
+    .idx-hero__inner { position: relative; z-index: 1; }
+    .idx-hero__eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--pink-300);
+      margin-bottom: 12px;
+    }
+    .idx-hero__title {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .idx-hero__title em { color: #FF99C3; font-style: italic; }
+    .idx-hero__sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.65;
+      max-width: 620px;
+    }
+
+    .idx-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .idx-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all var(--transition-base);
+    }
+    .idx-card:hover {
+      border-color: var(--pink-300);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .idx-card__title-link {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-900);
+      line-height: 1.2;
+      text-decoration: none;
+    }
+    .idx-card__title-link:hover { color: var(--pink-700); }
+    .idx-card__num {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--pink-600);
+      line-height: 1;
+    }
+    .idx-card__title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-900);
+      line-height: 1.2;
+    }
+    .idx-card__file {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+    .idx-card__states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .idx-state {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+      color: var(--gray-700);
+      text-decoration: none;
+    }
+    .idx-state:hover { background: var(--pink-50); border-color: var(--pink-200); color: var(--pink-700); }
+    .idx-state--default { background: var(--pink-50); border-color: var(--pink-200); color: var(--pink-700); }
+
+    .idx-section {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+    .idx-section__title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .idx-section__title .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--pink-600);
+      color: white;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .fix-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .fix-row {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+    }
+    .fix-row__check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--color-success);
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .fix-row strong { color: var(--gray-900); display: block; margin-bottom: 2px; }
+    .fix-row code {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      background: var(--gray-100);
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: var(--gray-800);
+    }
+
+    .var-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .var-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      padding: 8px 10px 10px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .var-table td {
+      padding: 10px;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: top;
+    }
+    .var-table code {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 11.5px;
+      color: var(--pink-700);
+      background: var(--pink-50);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .var-table tbody tr:hover { background: var(--gray-50); }
+  </style>
+</head>
+<body>
+
+  <div class="idx-wrap">
+
+    <section class="idx-hero">
+      <div class="idx-hero__bg"></div>
+      <div class="idx-hero__pattern"></div>
+      <div class="idx-hero__inner">
+        <p class="idx-hero__eyebrow">Production handoff · v2.0</p>
+        <h1 class="idx-hero__title">Maharani Weddings Academy<br><em>ready for Antigravity</em></h1>
+        <p class="idx-hero__sub">
+          All blockers from the audit are fixed. Every page has a working mobile drawer,
+          WCAG&nbsp;AA focus + contrast, reduced-motion support, server-controlled state blocks,
+          and explicit <code style="background:rgba(255,255,255,0.1); color:#FFB3D5; padding:1px 6px; border-radius:4px; font-family:'SF Mono',Monaco,monospace;">{{TEMPLATE_VAR}}</code>
+          markers so nothing fake gets shipped.
+        </p>
+      </div>
+    </section>
+
+    <h2 style="font-family: var(--font-display); font-size: 24px; font-weight: 600; color: var(--gray-900); margin-bottom: 16px;">Pages &amp; states</h2>
+
+    <div class="idx-grid">
+
+      <div class="idx-card">
+        <span class="idx-card__num">01</span>
+        <a href="login.html" class="idx-card__title-link">Login</a>
+        <span class="idx-card__file">login.html</span>
+        <div class="idx-card__states">
+          <a href="login.html" class="idx-state idx-state--default">Default</a>
+          <span class="idx-state" title="Set ERROR_VISIBLE=flex server-side">Error state (markup ready)</span>
+        </div>
+      </div>
+
+      <div class="idx-card">
+        <span class="idx-card__num">02</span>
+        <a href="reset-password.html" class="idx-card__title-link">Reset password</a>
+        <span class="idx-card__file">reset-password.html</span>
+        <div class="idx-card__states">
+          <a href="reset-password.html" class="idx-state idx-state--default">Set new</a>
+          <a href="reset-password.html?reset=success" class="idx-state">Success</a>
+          <a href="reset-password.html?reset=expired" class="idx-state">Expired link</a>
+        </div>
+      </div>
+
+      <div class="idx-card">
+        <span class="idx-card__num">03</span>
+        <a href="dashboard.html" class="idx-card__title-link">Dashboard</a>
+        <span class="idx-card__file">dashboard.html</span>
+        <div class="idx-card__states">
+          <a href="dashboard.html" class="idx-state idx-state--default">Active learner</a>
+          <a href="dashboard.html?state=empty" class="idx-state">Empty / new user</a>
+        </div>
+      </div>
+
+      <div class="idx-card">
+        <span class="idx-card__num">04</span>
+        <a href="course.html" class="idx-card__title-link">Course overview</a>
+        <span class="idx-card__file">course.html</span>
+        <div class="idx-card__states">
+          <a href="course.html" class="idx-state idx-state--default">In progress</a>
+          <span class="idx-state" title="See lesson-row variant comments in source">4 lesson variants documented</span>
+        </div>
+      </div>
+
+      <div class="idx-card">
+        <span class="idx-card__num">05</span>
+        <a href="lesson.html" class="idx-card__title-link">Lesson player</a>
+        <span class="idx-card__file">lesson.html</span>
+        <div class="idx-card__states">
+          <a href="lesson.html" class="idx-state idx-state--default">Default</a>
+          <span class="idx-state" title="Triggered by Mark-as-complete button">XP banner (click Mark complete)</span>
+        </div>
+      </div>
+
+      <div class="idx-card">
+        <span class="idx-card__num">06</span>
+        <a href="certificate.html" class="idx-card__title-link">Certificate</a>
+        <span class="idx-card__file">certificate.html</span>
+        <div class="idx-card__states">
+          <a href="certificate.html" class="idx-state idx-state--default">Print preview</a>
+          <span class="idx-state" title="window.print() opens browser print dialog">A4 landscape print-ready</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Audit checklist -->
+    <section class="idx-section">
+      <h2 class="idx-section__title"><span class="num">!</span> Critical blockers — all resolved</h2>
+      <div class="fix-list">
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div>
+            <strong>Mobile navigation works</strong>
+            Hamburger button in the top bar opens a slide-out drawer (<code>academy.js</code>) with full nav + lesson TOC on the lesson page. Backdrop, Escape-to-close, focus-trap-light, and aria-hidden are all wired.
+          </div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div>
+            <strong>WCAG AA pass</strong>
+            <code>:focus-visible</code> ring globally on buttons, links, inputs, video play, password toggle, drawer items. <code>--gray-400</code> darkened from <code>#A89F96</code> → <code>#756B62</code> (5.0:1 on white). Skip-to-main link on every page. Functional emoji replaced with SVG icons + aria-labels.
+          </div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div>
+            <strong>Reset-password success state lives in the DOM</strong>
+            Three sibling cards (<code>data-state="set|success|expired"</code>) are all rendered. A small router reads <code>?reset=</code> and toggles <code>.active</code>. WordPress redirect to <code>?reset=success</code> just works.
+          </div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div>
+            <strong>No invented content</strong>
+            Every level name, lesson title, stat number, badge name, and URL is now a <code>{{TEMPLATE_VAR}}</code>. See the variable map below — Antigravity wires these from LearnDash + user meta.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="idx-section">
+      <h2 class="idx-section__title"><span class="num">⚠</span> Important issues — all resolved</h2>
+      <div class="fix-list">
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><strong>URLs templated.</strong> <code>{{LOGIN_ACTION_URL}}</code>, <code>{{GOOGLE_OAUTH_URL}}</code>, <code>{{REDIRECT_TO}}</code>, <code>{{HOME_URL}}</code> etc. No hardcoded paths.</div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><strong>Password toggle a11y.</strong> <code>data-toggle-pwd</code> handler updates <code>aria-label</code> and <code>aria-pressed</code> on every click.</div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><strong>iOS zoom fixed.</strong> <code>.form-input</code> font-size forced to <code>16px</code>. Base <code>--text-base</code> bumped to match.</div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><strong>Empty state.</strong> Dashboard renders an <code>.empty-state</code> CTA when user has no progress. Server picks which block to render; <code>?state=empty</code> toggle for QA.</div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><strong>Error states.</strong> Login has a server-controlled <code>.alert-inline--error</code> above the form. Reset password validates confirm-match + all 4 rules client-side, plus a form-level error region.</div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <div><strong>Polish:</strong> favicon, meta description, OG tags, <code>prefers-reduced-motion</code> on every transform/hover, decorative SVGs marked <code>aria-hidden</code>, print styles for the certificate, password strength now requires a special character before "Strong", Google sign-in restyled to closely follow Google's brand spec (white bg, Roboto 14px, official multi-color SVG).</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="idx-section">
+      <h2 class="idx-section__title"><span class="num">$</span> Template variable map</h2>
+      <p style="font-size: 14px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.6;">
+        Every <code>{{VAR}}</code> in the templates maps to a concrete LearnDash function or WP user-meta key.
+        Pipe defaults (<code>{{VAR|fallback}}</code>) are intentional fallbacks for empty/null.
+      </p>
+
+      <table class="var-table">
+        <thead>
+          <tr>
+            <th style="width: 38%;">Template var</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>{{USER_DISPLAY_NAME}}</code></td><td><code>$current_user-&gt;display_name</code></td></tr>
+          <tr><td><code>{{USER_INITIAL}}</code></td><td>First letter of display name, uppercase</td></tr>
+          <tr><td><code>{{XP_CURRENT}}</code></td><td>user meta <code>mw_xp_total</code></td></tr>
+          <tr><td><code>{{XP_NEXT_LEVEL}}</code></td><td>computed from your level thresholds table</td></tr>
+          <tr><td><code>{{XP_PERCENT}}</code></td><td>0–100, <code>(XP_CURRENT − threshold) / (XP_NEXT_LEVEL − threshold) × 100</code></td></tr>
+          <tr><td><code>{{LEVEL_NUM}}</code> / <code>{{LEVEL_NAME}}</code></td><td>user meta <code>mw_xp_level</code> + your name lookup. <em>Maharani team owns the level names — none invented here.</em></td></tr>
+          <tr><td><code>{{STREAK_DAYS}}</code></td><td>user meta <code>mw_streak_days</code></td></tr>
+          <tr><td><code>{{STREAK_TEXT}}</code></td><td>e.g. <code>5-day streak — keep it going</code> (server-built, plural-aware)</td></tr>
+          <tr><td><code>{{IF_STREAK_HIDDEN}}</code></td><td>emit <code>style="display:none"</code> when streak = 0, empty string otherwise</td></tr>
+          <tr><td><code>{{GREETING_HEADLINE}}</code></td><td>e.g. <code>Good morning, {first_name}</code> — server-built, time-aware</td></tr>
+          <tr><td><code>{{BADGES_EARNED_COUNT}}</code> / <code>{{BADGES_REMAINING_COUNT}}</code></td><td>derived from <code>mw_badges_earned</code> array</td></tr>
+          <tr><td><code>{{COURSE_PROGRESS_PCT}}</code></td><td><code>learndash_course_progress($user_id, $course_id)['percentage']</code></td></tr>
+          <tr><td><code>{{COURSE_RING_OFFSET}}</code></td><td><code>round(364.4 × (1 − pct / 100), 1)</code> — for the SVG ring</td></tr>
+          <tr><td><code>{{LESSONS_DONE_IN_COURSE}}</code> / <code>{{LESSONS_LEFT_IN_COURSE}}</code></td><td>count of <code>learndash_is_lesson_complete</code> per lesson</td></tr>
+          <tr><td><code>{{CURRENT_LESSON_*}}</code></td><td>resolve from last incomplete lesson in user's active course</td></tr>
+          <tr><td><code>{{COURSE_1_TITLE}}…{{COURSE_4_*}}</code></td><td>each course card in the courses grid — loop this from your courses CPT</td></tr>
+          <tr><td><code>{{TRAIL_STEP_N_NAME}}</code> / <code>{{TRAIL_STEP_N_XP}}</code></td><td>each module in active course, status drives variant class</td></tr>
+          <tr><td><code>{{LESSON_TAKEAWAY_N}}</code></td><td>custom field per lesson; render takeaways block only if at least 1 exists</td></tr>
+          <tr><td><code>{{RP_KEY}}</code> / <code>{{RP_LOGIN}}</code></td><td>WP reset key + login from the email link query string</td></tr>
+          <tr><td><code>{{LOGIN_ACTION_URL}}</code></td><td>typically <code>/wp-login.php</code></td></tr>
+          <tr><td><code>{{RESET_ACTION_URL}}</code></td><td><code>/wp-login.php?action=resetpass</code></td></tr>
+          <tr><td><code>{{LOSTPASSWORD_ACTION_URL}}</code></td><td><code>/wp-login.php?action=lostpassword</code></td></tr>
+          <tr><td><code>{{GOOGLE_OAUTH_URL}}</code></td><td>OAuth start URL from your Google login plugin — Nextend Social Login, etc.</td></tr>
+          <tr><td><code>{{REDIRECT_TO}}</code></td><td>the post-login URL — <strong>your real production dashboard route</strong>, not <code>/dashboard</code></td></tr>
+          <tr><td><code>{{ERROR_VISIBLE}}</code> / <code>{{ERROR_TITLE}}</code> / <code>{{ERROR_MESSAGE}}</code></td><td>set when <code>wp_login_failed</code> fires; otherwise omit / default to "none"</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="idx-section">
+      <h2 class="idx-section__title"><span class="num">i</span> What still needs human input</h2>
+      <div class="fix-list">
+        <div class="fix-row">
+          <span class="fix-row__check" style="background: var(--gold-600);" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <div>
+            <strong>Level names (1–5+).</strong> Decide internally and pass them as <code>{{LEVEL_NAME}}</code>. No placeholders are baked in.
+          </div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" style="background: var(--gold-600);" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <div>
+            <strong>Badge artwork.</strong> Current SVGs are placeholders (smile, book, flame, lock). When real artwork lands, swap the <code>&lt;svg&gt;</code> inside <code>.badge-thumb__icon</code>.
+          </div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" style="background: var(--gold-600);" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <div>
+            <strong>Hero copy on login.</strong> <code>{{HERO_HEADLINE_LINE_1}}</code>, <code>{{HERO_HEADLINE_LINE_2}}</code>, <code>{{HERO_DESCRIPTION}}</code>, and the stats block were all invented in v1. They've been removed — fill in your real value proposition before launch.
+          </div>
+        </div>
+        <div class="fix-row">
+          <span class="fix-row__check" style="background: var(--gold-600);" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <div>
+            <strong>Course cover artwork.</strong> The continue-card image slot uses a striped placeholder labelled "COURSE COVER". Provide a real image and swap the placeholder div for an <code>&lt;img&gt;</code>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

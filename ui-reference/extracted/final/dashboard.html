@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your Maharani Weddings Academy learning dashboard.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>My Dashboard — Maharani Weddings Academy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Dashboard hero */
+    .dash-hero {
+      background: var(--gray-900);
+      position: relative;
+      overflow: hidden;
+      padding: var(--space-10) var(--space-16) var(--space-12);
+      margin-bottom: var(--space-10);
+    }
+    .dash-hero__bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 80% 50%, rgba(200,0,107,0.3) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 80%, rgba(212,160,23,0.15) 0%, transparent 45%);
+      background-color: #12060D;
+    }
+    .dash-hero__pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(200,0,107,0.05) 0px, rgba(200,0,107,0.05) 1px, transparent 1px, transparent 24px),
+        repeating-linear-gradient(-45deg, rgba(200,0,107,0.05) 0px, rgba(200,0,107,0.05) 1px, transparent 1px, transparent 24px);
+      background-size: 24px 24px;
+    }
+    .dash-hero__circle {
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,0,107,0.12);
+      box-shadow:
+        0 0 0 50px rgba(200,0,107,0.04),
+        0 0 0 100px rgba(200,0,107,0.025);
+    }
+    .dash-hero__content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      max-width: var(--page-max);
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+    .dash-hero__avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--pink-600);
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 3px solid rgba(255,255,255,0.2);
+    }
+    .dash-hero__greeting { flex: 1; min-width: 220px; }
+    .dash-hero__eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink-300);
+      margin-bottom: 6px;
+    }
+    .dash-hero__name {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 500;
+      color: white;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .dash-hero__streak {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+    .dash-hero__streak svg { color: #FF80B8; flex-shrink: 0; }
+
+    .dash-hero__stats {
+      display: flex;
+      gap: var(--space-7);
+      align-items: center;
+    }
+    .dash-hero__stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .dash-hero__stat-num {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 600;
+      color: white;
+      line-height: 1;
+    }
+    .dash-hero__stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+    .dash-hero__stat-divider {
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.14);
+    }
+
+    .dash-hero__xp-bar {
+      margin-top: 16px;
+      max-width: 320px;
+    }
+    .dash-hero__xp-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+    .dash-hero__xp-track {
+      height: 6px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .dash-hero__xp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink-500), var(--gold-400));
+      border-radius: 3px;
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .dash-grid {
+      max-width: var(--page-max);
+      margin: 0 auto;
+      padding: 0 var(--space-8) var(--space-16);
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: var(--space-8);
+    }
+    .dash-main { min-width: 0; }
+    .dash-side { min-width: 0; }
+
+    /* Continue card */
+    .continue-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      margin-bottom: var(--space-8);
+      transition: box-shadow var(--transition-slow);
+      text-decoration: none;
+      color: inherit;
+    }
+    .continue-card:hover { box-shadow: var(--shadow-md); color: inherit; }
+    .continue-card__body { padding: var(--space-7); }
+    .continue-card__eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--pink-600);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .continue-card__title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--space-2);
+      line-height: 1.15;
+    }
+    .continue-card__lesson {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: var(--space-5);
+    }
+    .continue-card__progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-bottom: var(--space-2);
+    }
+    .continue-card__image {
+      width: 200px;
+      background: linear-gradient(135deg, var(--pink-100), var(--blush-200));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid var(--gray-100);
+      position: relative;
+    }
+    .continue-card__image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(200,0,107,0.08) 0px, rgba(200,0,107,0.08) 1px, transparent 1px, transparent 14px),
+        repeating-linear-gradient(-45deg, rgba(200,0,107,0.08) 0px, rgba(200,0,107,0.08) 1px, transparent 1px, transparent 14px);
+      background-size: 14px 14px;
+    }
+    .continue-card__image-label {
+      position: relative;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pink-700);
+      background: rgba(255,255,255,0.8);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+    }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+
+    .course-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transition: all var(--transition-slow);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .course-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: var(--pink-200);
+      color: inherit;
+    }
+    .course-card__top {
+      height: 5px;
+      background: var(--pink-600);
+    }
+    .course-card__top--gold { background: linear-gradient(90deg, var(--gold-600), var(--gold-400)); }
+    .course-card__top--locked { background: var(--gray-300); }
+    .course-card__body { padding: var(--space-5) var(--space-6) var(--space-6); }
+    .course-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--pink-50);
+      color: var(--pink-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-3);
+    }
+    .course-card--locked .course-card__icon {
+      background: var(--gray-100);
+      color: var(--gray-500);
+    }
+    .course-card__title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--space-2);
+      line-height: 1.2;
+    }
+    .course-card--locked .course-card__title { color: var(--gray-500); }
+    .course-card__desc {
+      font-size: 13px;
+      color: var(--gray-600);
+      line-height: 1.5;
+      margin-bottom: var(--space-4);
+    }
+    .course-card--locked .course-card__desc { color: var(--gray-500); }
+    .course-card__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: var(--space-4);
+    }
+    .course-card__meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .course-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--gray-100);
+      gap: var(--space-3);
+    }
+
+    /* Sidebar widgets */
+    .badge-section,
+    .trail-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: var(--space-5);
+    }
+    .badge-section__header,
+    .trail-card__header {
+      padding: var(--space-5) var(--space-6);
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .badge-section__title,
+    .trail-card__title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    .badge-section__body,
+    .trail-card__body { padding: var(--space-5) var(--space-6); }
+
+    .badge-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .badge-thumb {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .badge-thumb__icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform var(--transition-slow);
+      color: white;
+    }
+    .badge-thumb__icon:hover { transform: scale(1.08) rotate(-3deg); }
+    .badge-thumb__icon--earned {
+      background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+      box-shadow: 0 3px 12px rgba(212,160,23,0.4);
+    }
+    .badge-thumb__icon--earned-pink {
+      background: linear-gradient(135deg, var(--pink-300), var(--pink-600));
+      box-shadow: 0 3px 12px rgba(200,0,107,0.4);
+    }
+    .badge-thumb__icon--locked {
+      background: var(--gray-100);
+      border: 2px dashed var(--gray-300);
+      color: var(--gray-500);
+    }
+    .badge-thumb__label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gray-700);
+      line-height: 1.2;
+    }
+    .badge-thumb--locked .badge-thumb__label { color: var(--gray-500); }
+
+    /* Trail */
+    .trail-step {
+      display: flex;
+      gap: var(--space-3);
+      align-items: flex-start;
+      padding-bottom: var(--space-4);
+      position: relative;
+    }
+    .trail-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 28px;
+      bottom: 0;
+      width: 1.5px;
+      background: var(--gray-200);
+    }
+    .trail-step--done:not(:last-child)::before { background: var(--color-success); }
+    .trail-step--active:not(:last-child)::before {
+      background: linear-gradient(to bottom, var(--pink-600), var(--gray-200));
+    }
+    .trail-step__dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 1;
+    }
+    .trail-step__dot--done   { background: var(--color-success); color: white; }
+    .trail-step__dot--active { background: var(--pink-600); color: white; box-shadow: 0 0 0 3px var(--pink-100); }
+    .trail-step__dot--upcoming {
+      background: white;
+      border: 2px dashed var(--gray-300);
+      color: var(--gray-500);
+    }
+    .trail-step__content {
+      flex: 1;
+      padding-top: 3px;
+    }
+    .trail-step__name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 2px;
+    }
+    .trail-step--upcoming .trail-step__name { color: var(--gray-500); }
+    .trail-step__meta {
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+    .trail-step--active .trail-step__name { color: var(--pink-700); }
+
+    /* Empty-state hero variant */
+    .dash-hero--empty .dash-hero__name { font-size: 30px; }
+
+    @media (max-width: 1024px) {
+      .dash-grid { grid-template-columns: 1fr; }
+      .dash-side { order: -1; }
+    }
+    @media (max-width: 768px) {
+      .dash-hero {
+        padding: var(--space-8) var(--space-5) var(--space-8);
+        margin-bottom: var(--space-6);
+      }
+      .dash-hero__stats { flex-wrap: wrap; gap: var(--space-4) var(--space-5); }
+      .dash-hero__stat-divider { display: none; }
+      .dash-hero__name { font-size: 28px; }
+      .courses-grid { grid-template-columns: 1fr; }
+      .dash-grid { padding: 0 var(--space-5) var(--space-10); }
+      .continue-card { grid-template-columns: 1fr; }
+      .continue-card__image { display: none; }
+    }
+  </style>
+</head>
+<body class="page-bg">
+
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- ===== NAV ===== -->
+  <nav class="mw-nav" aria-label="Main">
+    <button class="mw-nav__hamburger" data-mw-drawer-open aria-label="Open navigation menu" aria-controls="mw-drawer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
+    <a href="{{HOME_URL}}" class="mw-nav__logo">
+      <span class="mw-nav__logo-script">Maharani</span>
+      <span class="mw-nav__logo-sub">Academy</span>
+    </a>
+
+    <div class="mw-nav__divider"></div>
+
+    <div class="mw-nav__links">
+      <a href="dashboard.html" class="mw-nav__link active">My Dashboard</a>
+      <a href="{{TRAIL_URL}}" class="mw-nav__link">My Trail</a>
+      <a href="{{CERTIFICATIONS_URL}}" class="mw-nav__link">Certifications</a>
+      <a href="{{COMMUNITY_URL}}" class="mw-nav__link">Community</a>
+    </div>
+
+    <div class="mw-nav__right">
+      <div class="mw-streak" aria-label="{{STREAK_DAYS}} day streak">
+        <svg class="mw-streak__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14a8 8 0 0 0 16 0c0-4.18-2.13-7.93-6.5-13.33z"/>
+        </svg>
+        {{STREAK_DAYS}} day streak
+      </div>
+
+      <div class="mw-xp-badge" aria-label="{{XP_CURRENT}} XP earned">
+        <div class="mw-xp-badge__icon" aria-hidden="true">★</div>
+        {{XP_CURRENT}} XP
+      </div>
+
+      <a href="{{ACCOUNT_URL}}" class="mw-avatar" aria-label="My account">{{USER_INITIAL}}</a>
+    </div>
+  </nav>
+
+  <!-- ===== MOBILE DRAWER ===== -->
+  <div class="mw-drawer-backdrop" data-mw-drawer-backdrop></div>
+  <aside class="mw-drawer" data-mw-drawer id="mw-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="mw-drawer__header">
+      <div style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-family:var(--font-display); font-size:24px; font-style:italic; color:var(--gray-900);">Maharani</span>
+        <span style="font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--gray-500); margin-top:2px;">Academy</span>
+      </div>
+      <button class="mw-drawer__close" data-mw-drawer-close aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="mw-drawer__user">
+      <div class="mw-avatar" aria-hidden="true">{{USER_INITIAL}}</div>
+      <div class="mw-drawer__user-meta">
+        <span class="mw-drawer__user-name">{{USER_DISPLAY_NAME}}</span>
+        <span class="mw-drawer__user-stat">{{XP_CURRENT}} XP · {{STREAK_DAYS}} day streak</span>
+      </div>
+    </div>
+
+    <div class="mw-drawer__section">
+      <div class="mw-drawer__section-label">Learn</div>
+      <a href="dashboard.html" class="mw-drawer__link active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        My Dashboard
+      </a>
+      <a href="{{TRAIL_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 7c4 0 6 5 0 10"/></svg>
+        My Trail
+      </a>
+      <a href="{{CERTIFICATIONS_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
+        Certifications
+      </a>
+      <a href="{{COMMUNITY_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Community
+      </a>
+    </div>
+
+    <div class="mw-drawer__section">
+      <div class="mw-drawer__section-label">Account</div>
+      <a href="{{ACCOUNT_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My account
+      </a>
+      <a href="{{LOGOUT_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+    </div>
+  </aside>
+
+  <main class="page-wrapper" id="main">
+
+    <!-- ===== HERO ===== -->
+    <div class="dash-hero">
+      <div class="dash-hero__bg"></div>
+      <div class="dash-hero__pattern"></div>
+      <div class="dash-hero__circle"></div>
+
+      <div class="dash-hero__content">
+        <div class="dash-hero__avatar" aria-hidden="true">{{USER_INITIAL}}</div>
+        <div class="dash-hero__greeting">
+          <p class="dash-hero__eyebrow">{{GREETING_EYEBROW|Welcome back}}</p>
+          <h1 class="dash-hero__name">{{GREETING_HEADLINE}}</h1>
+
+          <!-- Streak — hide via server if STREAK_DAYS == 0 -->
+          <div class="dash-hero__streak" {{IF_STREAK_HIDDEN|}}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14a8 8 0 0 0 16 0c0-4.18-2.13-7.93-6.5-13.33z"/>
+            </svg>
+            <span>{{STREAK_TEXT}}</span>
+          </div>
+
+          <!-- XP level bar -->
+          <div class="dash-hero__xp-bar">
+            <div class="dash-hero__xp-top">
+              <span>LEVEL {{LEVEL_NUM}} · {{LEVEL_NAME}}</span>
+              <span>{{XP_CURRENT}} / {{XP_NEXT_LEVEL}} XP</span>
+            </div>
+            <div
+              class="dash-hero__xp-track"
+              role="progressbar"
+              aria-valuenow="{{XP_PERCENT}}"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-label="Level progress"
+            >
+              <div class="dash-hero__xp-fill" style="width: {{XP_PERCENT}}%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dash-hero__stats" aria-label="Your stats">
+          <div class="dash-hero__stat">
+            <span class="dash-hero__stat-num">{{BADGES_EARNED_COUNT}}</span>
+            <span class="dash-hero__stat-label">Badges earned</span>
+          </div>
+          <div class="dash-hero__stat-divider" aria-hidden="true"></div>
+          <div class="dash-hero__stat">
+            <span class="dash-hero__stat-num">{{COURSE_PROGRESS_PCT}}%</span>
+            <span class="dash-hero__stat-label">Course complete</span>
+          </div>
+          <div class="dash-hero__stat-divider" aria-hidden="true"></div>
+          <div class="dash-hero__stat">
+            <span class="dash-hero__stat-num">{{LESSONS_DONE_COUNT}}</span>
+            <span class="dash-hero__stat-label">Lessons done</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAIN GRID ===== -->
+    <div class="dash-grid">
+      <div class="dash-main">
+
+        <!-- ============================================================
+             CONTINUE LEARNING — render only when user has an in-progress lesson.
+             For new users with zero progress, render the EMPTY STATE block instead.
+             ============================================================ -->
+        <div data-state="has-progress">
+          <div class="section-header">
+            <div>
+              <h2 class="section-header__title">Continue learning</h2>
+              <p class="section-header__subtitle">Pick up right where you left off</p>
+            </div>
+          </div>
+
+          <a href="{{CURRENT_LESSON_URL}}" class="continue-card anim-fade-in-up">
+            <div class="continue-card__body">
+              <div class="continue-card__eyebrow">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Continue — {{CURRENT_COURSE_TITLE}}
+              </div>
+              <h3 class="continue-card__title">{{CURRENT_LESSON_TITLE}}</h3>
+              <p class="continue-card__lesson">Lesson {{CURRENT_LESSON_NUM}} of {{CURRENT_COURSE_TOTAL_LESSONS}} · ~{{CURRENT_LESSON_REMAINING_MIN}} min remaining</p>
+
+              <div class="continue-card__progress-label">
+                <span>Your progress</span>
+                <span style="color: var(--pink-600);">{{CURRENT_COURSE_PCT}}% complete</span>
+              </div>
+              <div
+                class="progress-bar"
+                style="margin-bottom: 20px;"
+                role="progressbar"
+                aria-valuenow="{{CURRENT_COURSE_PCT}}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div class="progress-bar__fill" style="width: {{CURRENT_COURSE_PCT}}%;"></div>
+              </div>
+
+              <span class="btn btn-primary">
+                Resume lesson
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </div>
+            <div class="continue-card__image" aria-hidden="true">
+              <span class="continue-card__image-label">Course cover</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- ============================================================
+             EMPTY STATE — render this in place of the "Continue learning"
+             block when the user has 0 XP / 0 lessons started.
+             ============================================================ -->
+        <div data-state="empty" style="display: none;">
+          <div class="section-header">
+            <div>
+              <h2 class="section-header__title">Welcome to the Academy</h2>
+              <p class="section-header__subtitle">Your learning journey starts here</p>
+            </div>
+          </div>
+
+          <div class="empty-state anim-fade-in-up">
+            <div class="empty-state__icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+            </div>
+            <h3 class="empty-state__title">Ready to begin?</h3>
+            <p class="empty-state__desc">
+              Start with <strong>{{FIRST_COURSE_TITLE}}</strong> — your first lesson takes about a minute and earns you your first badge.
+            </p>
+            <a href="{{FIRST_COURSE_URL}}" class="btn btn-primary btn--lg">
+              Start your first course
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- ===== COURSES ===== -->
+        <div class="section-header" style="margin-top: var(--space-8);">
+          <div>
+            <h2 class="section-header__title">My courses</h2>
+            <p class="section-header__subtitle">Your enrolled learning trails</p>
+          </div>
+          <a href="{{COURSES_INDEX_URL}}" class="section-header__action">Browse all courses →</a>
+        </div>
+
+        <!-- ANTIGRAVITY: loop course cards. Use the variants below as templates.
+             For empty (no courses enrolled) state, replace the whole grid with
+             the empty-state block.
+        -->
+        <div class="courses-grid">
+
+          <!-- Variant: in-progress course -->
+          <a href="course.html" class="course-card anim-fade-in-up anim-delay-1">
+            <div class="course-card__top"></div>
+            <div class="course-card__body">
+              <div class="course-card__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </div>
+              <h3 class="course-card__title">{{COURSE_1_TITLE}}</h3>
+              <p class="course-card__desc">{{COURSE_1_DESC}}</p>
+              <div class="course-card__meta">
+                <span class="course-card__meta-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  {{COURSE_1_LESSON_COUNT}} lessons
+                </span>
+                <span class="course-card__meta-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
+                  Certificate
+                </span>
+              </div>
+              <div class="course-card__footer">
+                <div style="min-width: 0; flex: 1;">
+                  <div style="font-size:11px; color:var(--gray-600); margin-bottom:4px; font-weight:600;">{{COURSE_1_PCT}}% complete</div>
+                  <div class="progress-bar" style="max-width:140px;" role="progressbar" aria-valuenow="{{COURSE_1_PCT}}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar__fill" style="width:{{COURSE_1_PCT}}%;"></div>
+                  </div>
+                </div>
+                <span class="pill pill--pink">In progress</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Variant: locked (prerequisite required) -->
+          <div class="course-card course-card--locked anim-fade-in-up anim-delay-2" aria-disabled="true">
+            <div class="course-card__top course-card__top--locked"></div>
+            <div class="course-card__body">
+              <div class="course-card__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <h3 class="course-card__title">{{COURSE_2_TITLE}}</h3>
+              <p class="course-card__desc">{{COURSE_2_DESC}}</p>
+              <div class="course-card__meta">
+                <span class="course-card__meta-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  {{COURSE_2_LESSON_COUNT}} lessons
+                </span>
+              </div>
+              <div class="course-card__footer">
+                <div style="font-size:12px; color:var(--gray-600); display:flex; align-items:center; gap:6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  Complete {{COURSE_2_PREREQ_NAME}} first
+                </div>
+                <span class="pill pill--gray">Locked</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Variant: coming soon — duplicate as needed. -->
+          <div class="course-card course-card--locked anim-fade-in-up anim-delay-3" aria-disabled="true">
+            <div class="course-card__top course-card__top--locked"></div>
+            <div class="course-card__body">
+              <div class="course-card__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <h3 class="course-card__title">{{COURSE_3_TITLE}}</h3>
+              <p class="course-card__desc">{{COURSE_3_DESC}}</p>
+              <div class="course-card__meta">
+                <span class="course-card__meta-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  {{COURSE_3_LESSON_COUNT}} lessons
+                </span>
+              </div>
+              <div class="course-card__footer">
+                <div style="font-size:12px; color:var(--gray-600);">Coming soon</div>
+                <span class="pill pill--gray">Soon</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="course-card course-card--locked anim-fade-in-up anim-delay-4" aria-disabled="true">
+            <div class="course-card__top course-card__top--locked"></div>
+            <div class="course-card__body">
+              <div class="course-card__icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <h3 class="course-card__title">{{COURSE_4_TITLE}}</h3>
+              <p class="course-card__desc">{{COURSE_4_DESC}}</p>
+              <div class="course-card__meta">
+                <span class="course-card__meta-item">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  {{COURSE_4_LESSON_COUNT}} lessons
+                </span>
+              </div>
+              <div class="course-card__footer">
+                <div style="font-size:12px; color:var(--gray-600);">Coming soon</div>
+                <span class="pill pill--gray">Soon</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="dash-side" aria-label="Achievements and trail">
+
+        <div class="badge-section anim-fade-in-up">
+          <div class="badge-section__header">
+            <h2 class="badge-section__title">My badges</h2>
+            <a href="{{BADGES_URL}}" style="font-size:12px; font-weight:600; color:var(--pink-600);">View all</a>
+          </div>
+          <div class="badge-section__body">
+            <!-- ANTIGRAVITY: loop earned + locked badges.
+                 Earned variants alternate gold / pink. Each badge has slug-based artwork. -->
+            <div class="badge-row">
+              <div class="badge-thumb">
+                <div class="badge-thumb__icon badge-thumb__icon--earned" title="{{BADGE_1_NAME}}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 11.75A1.25 1.25 0 1 0 9 9.25a1.25 1.25 0 0 0 0 2.5zm6 0a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5zM12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm5.13-6H6.87a5 5 0 0 0 10.26 0z"/></svg>
+                </div>
+                <span class="badge-thumb__label">{{BADGE_1_NAME}}</span>
+              </div>
+              <div class="badge-thumb">
+                <div class="badge-thumb__icon badge-thumb__icon--earned-pink" title="{{BADGE_2_NAME}}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <span class="badge-thumb__label">{{BADGE_2_NAME}}</span>
+              </div>
+              <div class="badge-thumb">
+                <div class="badge-thumb__icon badge-thumb__icon--earned" title="{{BADGE_3_NAME}}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14a8 8 0 0 0 16 0c0-4.18-2.13-7.93-6.5-13.33z"/></svg>
+                </div>
+                <span class="badge-thumb__label">{{BADGE_3_NAME}}</span>
+              </div>
+              <div class="badge-thumb badge-thumb--locked">
+                <div class="badge-thumb__icon badge-thumb__icon--locked">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span class="badge-thumb__label">Locked</span>
+              </div>
+              <div class="badge-thumb badge-thumb--locked">
+                <div class="badge-thumb__icon badge-thumb__icon--locked">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span class="badge-thumb__label">Locked</span>
+              </div>
+              <div class="badge-thumb badge-thumb--locked">
+                <div class="badge-thumb__icon badge-thumb__icon--locked">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span class="badge-thumb__label">Locked</span>
+              </div>
+              <div class="badge-thumb badge-thumb--locked">
+                <div class="badge-thumb__icon badge-thumb__icon--locked">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span class="badge-thumb__label">Locked</span>
+              </div>
+              <div class="badge-thumb badge-thumb--locked">
+                <div class="badge-thumb__icon badge-thumb__icon--locked">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+                <span class="badge-thumb__label">Locked</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; padding-top:12px; border-top: 1px solid var(--gray-100); text-align:center;">
+              <span style="font-size:12px; color:var(--gray-500); font-weight:500;">{{BADGES_EARNED_COUNT}} earned · {{BADGES_REMAINING_COUNT}} more to unlock</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trail-card anim-fade-in-up anim-delay-2">
+          <div class="trail-card__header">
+            <h2 class="trail-card__title">Learning trail</h2>
+            <span class="pill pill--pink">In progress</span>
+          </div>
+          <div class="trail-card__body">
+            <!-- ANTIGRAVITY: loop trail steps. Status drives which variant.
+                 Variants: trail-step--done | trail-step--active | trail-step--upcoming -->
+            <div class="trail-step trail-step--done">
+              <div class="trail-step__dot trail-step__dot--done" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="2.5,7 5.5,10 11.5,4"/>
+                </svg>
+              </div>
+              <div class="trail-step__content">
+                <div class="trail-step__name">{{TRAIL_STEP_1_NAME}}</div>
+                <div class="trail-step__meta">Completed · +{{TRAIL_STEP_1_XP}} XP</div>
+              </div>
+            </div>
+            <div class="trail-step trail-step--done">
+              <div class="trail-step__dot trail-step__dot--done" aria-hidden="true">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="2.5,7 5.5,10 11.5,4"/>
+                </svg>
+              </div>
+              <div class="trail-step__content">
+                <div class="trail-step__name">{{TRAIL_STEP_2_NAME}}</div>
+                <div class="trail-step__meta">Completed · +{{TRAIL_STEP_2_XP}} XP</div>
+              </div>
+            </div>
+            <div class="trail-step trail-step--active">
+              <div class="trail-step__dot trail-step__dot--active" aria-hidden="true">▸</div>
+              <div class="trail-step__content">
+                <div class="trail-step__name">{{TRAIL_STEP_3_NAME}}</div>
+                <div class="trail-step__meta" style="color:var(--pink-500);">In progress · Lesson {{CURRENT_LESSON_NUM}} of {{CURRENT_COURSE_TOTAL_LESSONS}}</div>
+              </div>
+            </div>
+            <div class="trail-step trail-step--upcoming">
+              <div class="trail-step__dot trail-step__dot--upcoming" aria-hidden="true">4</div>
+              <div class="trail-step__content">
+                <div class="trail-step__name">{{TRAIL_STEP_4_NAME}}</div>
+                <div class="trail-step__meta">Upcoming</div>
+              </div>
+            </div>
+            <div class="trail-step trail-step--upcoming">
+              <div class="trail-step__dot trail-step__dot--upcoming" aria-hidden="true">5</div>
+              <div class="trail-step__content">
+                <div class="trail-step__name">{{TRAIL_STEP_5_NAME}}</div>
+                <div class="trail-step__meta">Upcoming</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+  </main>
+
+  <script src="academy.js"></script>
+  <script>
+    // Demo only: ?state=empty toggles the empty-state block.
+    // Antigravity should remove this — server-side controls which block renders.
+    (function () {
+      const p = new URLSearchParams(location.search);
+      if (p.get('state') === 'empty') {
+        document.querySelector('[data-state="has-progress"]').style.display = 'none';
+        document.querySelector('[data-state="empty"]').style.display = 'block';
+      }
+    })();
+  </script>
+</body>
+</html>

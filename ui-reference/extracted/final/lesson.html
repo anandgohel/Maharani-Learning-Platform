@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{LESSON_DESCRIPTION_META}}">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <title>{{LESSON_TITLE}} — {{COURSE_SHORT_NAME}} — Maharani Weddings Academy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 1fr var(--sidebar-width);
+      min-height: calc(100vh - var(--nav-height));
+    }
+    .lesson-main {
+      min-width: 0;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    /* Topbar */
+    .lesson-topbar {
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 var(--space-8);
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    .lesson-topbar__breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-600);
+      flex: 1;
+      min-width: 0;
+    }
+    .lesson-topbar__breadcrumb a {
+      color: var(--gray-600);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .lesson-topbar__breadcrumb a:hover { color: var(--pink-600); }
+    .lesson-topbar__current {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--gray-800);
+      font-weight: 600;
+    }
+    .lesson-topbar__sep { color: var(--gray-300); flex-shrink: 0; }
+    .lesson-topbar__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-shrink: 0;
+    }
+    .lesson-topbar__xp {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-800);
+      background: var(--gold-50);
+      border: 1px solid var(--gold-200);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+    }
+    .lesson-mobile-toc {
+      display: none;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--gray-700);
+    }
+
+    /* Video section */
+    .lesson-video-section {
+      background: var(--gray-900);
+      padding: var(--space-8) var(--space-10);
+    }
+    .lesson-video-meta { margin-bottom: var(--space-4); }
+    .lesson-video-meta__lesson-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #FF99C3;
+      margin-bottom: var(--space-2);
+    }
+    .lesson-video-meta__title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .lesson-video-player {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      max-width: 840px;
+    }
+    .lesson-video-player iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .lesson-video-player__placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      color: white;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 24px),
+        repeating-linear-gradient(-45deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 24px),
+        radial-gradient(ellipse at center, #2A0F1C 0%, #0F0408 100%);
+      background-size: 24px 24px, 24px 24px, cover;
+    }
+    .lesson-video-player__play-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(200,0,107,0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      border: none;
+      color: white;
+    }
+    .lesson-video-player__play-btn:hover {
+      background: var(--pink-600);
+      transform: scale(1.08);
+      box-shadow: 0 0 32px rgba(200,0,107,0.5);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .lesson-video-player__play-btn:hover { transform: none; }
+    }
+    .lesson-video-player__label {
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      font-weight: 500;
+      font-family: 'SF Mono', Monaco, monospace;
+      letter-spacing: 0.05em;
+    }
+
+    .lesson-video-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) 0 0;
+      max-width: 840px;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .lesson-video-controls__left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .lesson-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+    .lesson-nav-btn:hover {
+      background: rgba(255,255,255,0.16);
+      color: white;
+    }
+    .lesson-nav-btn--primary {
+      background: var(--pink-600);
+      border-color: var(--pink-600);
+      color: white;
+    }
+    .lesson-nav-btn--primary:hover {
+      background: var(--pink-700);
+      border-color: var(--pink-700);
+      color: white;
+    }
+    .lesson-nav-btn[aria-disabled="true"] {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .mark-complete-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: white;
+      background: var(--color-success);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+    .mark-complete-btn:hover {
+      background: #0F5A38;
+      box-shadow: 0 4px 12px rgba(20,110,71,0.4);
+    }
+    .mark-complete-btn.done {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      border: 1.5px solid #A7D7BC;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* Body */
+    .lesson-body {
+      padding: var(--space-8) var(--space-10);
+      max-width: 840px;
+    }
+
+    .lesson-desc {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-7);
+      margin-bottom: var(--space-6);
+    }
+    .lesson-desc__label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-bottom: var(--space-3);
+    }
+    .lesson-desc__text {
+      font-size: 15px;
+      color: var(--gray-700);
+      line-height: 1.7;
+    }
+
+    .lesson-takeaways {
+      background: var(--pink-50);
+      border: 1px solid var(--pink-100);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6) var(--space-7);
+      margin-bottom: var(--space-6);
+    }
+    .lesson-takeaways__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .lesson-takeaways__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--pink-600);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .lesson-takeaways__title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    .lesson-takeaways__list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .lesson-takeaways__item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      font-size: 14px;
+      color: var(--gray-800);
+      line-height: 1.55;
+    }
+    .lesson-takeaways__bullet {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--pink-600);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* XP earned banner — toggled by mark-complete */
+    .lesson-xp-banner {
+      display: none;
+      background: var(--gray-900);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-6);
+      margin-bottom: var(--space-6);
+      align-items: center;
+      gap: var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+    .lesson-xp-banner.show {
+      display: flex;
+      animation: fadeInUp 0.5s cubic-bezier(0.4,0,0.2,1) both;
+    }
+    .lesson-xp-banner__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(212,160,23,0.4);
+    }
+    .lesson-xp-banner__content { flex: 1; min-width: 0; }
+    .lesson-xp-banner__title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .lesson-xp-banner__sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+    .lesson-xp-banner__xp {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--gold-400);
+      flex-shrink: 0;
+    }
+
+    /* Sidebar (TOC) */
+    .lesson-sidebar {
+      background: white;
+      overflow-y: auto;
+      height: calc(100vh - var(--nav-height));
+      position: sticky;
+      top: var(--nav-height);
+    }
+    .lesson-sidebar__course-header {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .lesson-sidebar__course-name {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-bottom: var(--space-2);
+    }
+    .lesson-sidebar__course-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-800);
+      line-height: 1.3;
+      margin-bottom: var(--space-3);
+    }
+    .lesson-sidebar__progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-bottom: var(--space-2);
+    }
+    .lesson-sidebar__lessons { padding: var(--space-3) 0; }
+    .sidebar-lesson-label {
+      padding: var(--space-3) var(--space-5) var(--space-2);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+    }
+    .sidebar-lesson-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--space-5);
+      transition: background var(--transition-fast);
+      text-decoration: none;
+      color: inherit;
+    }
+    .sidebar-lesson-item:hover { background: var(--gray-50); color: inherit; }
+    .sidebar-lesson-item.active {
+      background: var(--pink-50);
+      border-left: 2px solid var(--pink-600);
+      padding-left: calc(var(--space-5) - 2px);
+    }
+    .sidebar-lesson-item[aria-disabled="true"] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .sidebar-lesson-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-lesson-dot--done {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+    .sidebar-lesson-dot--active {
+      background: var(--pink-600);
+      color: white;
+    }
+    .sidebar-lesson-text {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-700);
+      line-height: 1.35;
+    }
+    .sidebar-lesson-item.active .sidebar-lesson-text {
+      color: var(--pink-700);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .lesson-layout { grid-template-columns: 1fr; }
+      .lesson-sidebar { display: none; }
+      .lesson-mobile-toc { display: inline-flex; }
+      .lesson-video-section { padding: var(--space-5); }
+      .lesson-body { padding: var(--space-5); }
+      .lesson-topbar { padding: 0 var(--space-4); }
+      .lesson-topbar__xp { display: none; }
+      .lesson-video-meta__title { font-size: 22px; }
+    }
+  </style>
+</head>
+<body style="background:var(--gray-50);">
+
+  <a href="#lesson-content" class="skip-link">Skip to lesson content</a>
+
+  <!-- NAV -->
+  <nav class="mw-nav" aria-label="Main">
+    <button class="mw-nav__hamburger" data-mw-drawer-open aria-label="Open navigation menu" aria-controls="mw-drawer">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <a href="{{HOME_URL}}" class="mw-nav__logo">
+      <span class="mw-nav__logo-script">Maharani</span>
+      <span class="mw-nav__logo-sub">Academy</span>
+    </a>
+    <div class="mw-nav__divider"></div>
+    <div class="mw-nav__links">
+      <a href="dashboard.html" class="mw-nav__link">My Dashboard</a>
+      <a href="course.html" class="mw-nav__link active">{{COURSE_SHORT_NAME}}</a>
+    </div>
+    <div class="mw-nav__right">
+      <div class="mw-streak" aria-label="{{STREAK_DAYS}} day streak">
+        <svg class="mw-streak__icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14a8 8 0 0 0 16 0c0-4.18-2.13-7.93-6.5-13.33z"/></svg>
+        {{STREAK_DAYS}} day streak
+      </div>
+      <div class="mw-xp-badge" aria-label="{{XP_CURRENT}} XP earned">
+        <div class="mw-xp-badge__icon" aria-hidden="true">★</div>
+        {{XP_CURRENT}} XP
+      </div>
+      <a href="{{ACCOUNT_URL}}" class="mw-avatar" aria-label="My account">{{USER_INITIAL}}</a>
+    </div>
+  </nav>
+
+  <!-- DRAWER — includes full lesson TOC on mobile -->
+  <div class="mw-drawer-backdrop" data-mw-drawer-backdrop></div>
+  <aside class="mw-drawer" data-mw-drawer id="mw-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="mw-drawer__header">
+      <div style="display:flex; flex-direction:column; line-height:1;">
+        <span style="font-family:var(--font-display); font-size:24px; font-style:italic; color:var(--gray-900);">Maharani</span>
+        <span style="font-size:9px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--gray-500); margin-top:2px;">Academy</span>
+      </div>
+      <button class="mw-drawer__close" data-mw-drawer-close aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mw-drawer__user">
+      <div class="mw-avatar" aria-hidden="true">{{USER_INITIAL}}</div>
+      <div class="mw-drawer__user-meta">
+        <span class="mw-drawer__user-name">{{USER_DISPLAY_NAME}}</span>
+        <span class="mw-drawer__user-stat">{{XP_CURRENT}} XP · {{STREAK_DAYS}} day streak</span>
+      </div>
+    </div>
+    <div class="mw-drawer__section">
+      <div class="mw-drawer__section-label">Learn</div>
+      <a href="dashboard.html" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        My Dashboard
+      </a>
+      <a href="course.html" class="mw-drawer__link active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Course overview
+      </a>
+    </div>
+    <div class="mw-drawer__section">
+      <div class="mw-drawer__section-label">{{MODULE_3_NAME}}</div>
+      <a href="lesson.html" class="mw-drawer__link">{{LESSON_PREV_TITLE}}</a>
+      <a href="lesson.html" class="mw-drawer__link active">{{LESSON_TITLE}}</a>
+      <a href="lesson.html" class="mw-drawer__link">{{LESSON_NEXT_TITLE}}</a>
+    </div>
+    <div class="mw-drawer__section">
+      <a href="{{ACCOUNT_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My account
+      </a>
+      <a href="{{LOGOUT_URL}}" class="mw-drawer__link">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+    </div>
+  </aside>
+
+  <div class="page-wrapper" style="background:var(--gray-50);">
+    <div class="lesson-layout">
+
+      <!-- ===== MAIN ===== -->
+      <main class="lesson-main" id="main">
+
+        <div class="lesson-topbar">
+          <nav class="lesson-topbar__breadcrumb" aria-label="Breadcrumb">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="lesson-topbar__sep" aria-hidden="true">›</span>
+            <a href="course.html">{{COURSE_SHORT_NAME}}</a>
+            <span class="lesson-topbar__sep" aria-hidden="true">›</span>
+            <span class="lesson-topbar__current">{{LESSON_TITLE}}</span>
+          </nav>
+          <div class="lesson-topbar__actions">
+            <span class="lesson-topbar__xp">+{{LESSON_XP}} XP this lesson</span>
+            <a href="course.html" class="btn btn-ghost btn--sm">Course overview</a>
+          </div>
+        </div>
+
+        <!-- Video -->
+        <section class="lesson-video-section" aria-labelledby="lesson-title">
+          <div class="lesson-video-meta">
+            <div class="lesson-video-meta__lesson-num">Lesson {{LESSON_NUMBER}} of {{COURSE_LESSON_COUNT}} · {{MODULE_NAME}}</div>
+            <h1 class="lesson-video-meta__title" id="lesson-title">{{LESSON_TITLE}}</h1>
+          </div>
+
+          <!-- Video player.
+               ANTIGRAVITY: replace the placeholder with the actual embed iframe.
+               For Vimeo:
+                 <iframe src="https://player.vimeo.com/video/{{VIDEO_ID}}?title=0&byline=0&portrait=0"
+                   allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+               For YouTube:
+                 <iframe src="https://www.youtube.com/embed/{{VIDEO_ID}}?rel=0"
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                   allowfullscreen></iframe>
+          -->
+          <div class="lesson-video-player" id="lesson-video-player">
+            <div class="lesson-video-player__placeholder">
+              <button class="lesson-video-player__play-btn" id="play-btn" aria-label="Play lesson video">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="6 3 20 12 6 21 6 3"/>
+                </svg>
+              </button>
+              <span class="lesson-video-player__label">VIDEO · {{LESSON_DURATION}}</span>
+            </div>
+          </div>
+
+          <div class="lesson-video-controls">
+            <div class="lesson-video-controls__left">
+              <a href="lesson.html" class="lesson-nav-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Previous
+              </a>
+              <a href="lesson.html" class="lesson-nav-btn lesson-nav-btn--primary">
+                Next lesson
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+            <button class="mark-complete-btn" id="mark-complete-btn" type="button">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span class="mark-complete-btn__label">Mark as complete</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Body -->
+        <div class="lesson-body" id="lesson-content">
+
+          <!-- XP banner — toggled by JS after mark-complete -->
+          <div class="lesson-xp-banner" id="xp-banner" role="status" aria-live="polite">
+            <div class="lesson-xp-banner__icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="lesson-xp-banner__content">
+              <div class="lesson-xp-banner__title">Lesson complete</div>
+              <div class="lesson-xp-banner__sub">Nicely done — the next lesson is ready when you are.</div>
+            </div>
+            <div class="lesson-xp-banner__xp">+{{LESSON_XP}} XP</div>
+          </div>
+
+          <div class="lesson-desc">
+            <div class="lesson-desc__label">About this lesson</div>
+            <p class="lesson-desc__text">{{LESSON_DESCRIPTION}}</p>
+          </div>
+
+          <!-- Takeaways — render only if lesson has takeaways defined -->
+          <div class="lesson-takeaways">
+            <div class="lesson-takeaways__header">
+              <div class="lesson-takeaways__icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <h2 class="lesson-takeaways__title">Key takeaways</h2>
+            </div>
+            <ul class="lesson-takeaways__list">
+              <li class="lesson-takeaways__item">
+                <span class="lesson-takeaways__bullet" aria-hidden="true">1</span>
+                {{LESSON_TAKEAWAY_1}}
+              </li>
+              <li class="lesson-takeaways__item">
+                <span class="lesson-takeaways__bullet" aria-hidden="true">2</span>
+                {{LESSON_TAKEAWAY_2}}
+              </li>
+              <li class="lesson-takeaways__item">
+                <span class="lesson-takeaways__bullet" aria-hidden="true">3</span>
+                {{LESSON_TAKEAWAY_3}}
+              </li>
+              <li class="lesson-takeaways__item">
+                <span class="lesson-takeaways__bullet" aria-hidden="true">4</span>
+                {{LESSON_TAKEAWAY_4}}
+              </li>
+            </ul>
+          </div>
+
+          <!-- Bottom nav -->
+          <div style="display:flex; justify-content:space-between; align-items:center; padding-top:var(--space-4); border-top:1px solid var(--gray-200); gap: var(--space-3); flex-wrap: wrap;">
+            <a href="lesson.html" class="btn btn-ghost">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Previous: {{LESSON_PREV_TITLE}}
+            </a>
+            <a href="lesson.html" class="btn btn-primary">
+              Next: {{LESSON_NEXT_TITLE}}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- ===== SIDEBAR TOC ===== -->
+      <aside class="lesson-sidebar" aria-label="Course lessons">
+
+        <div class="lesson-sidebar__course-header">
+          <div class="lesson-sidebar__course-name">Current course</div>
+          <div class="lesson-sidebar__course-title">{{COURSE_TITLE}}</div>
+          <div class="lesson-sidebar__progress-text">
+            <span>Course progress</span>
+            <span style="color:var(--pink-600);">{{COURSE_PROGRESS_PCT}}%</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="{{COURSE_PROGRESS_PCT}}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar__fill" style="width:{{COURSE_PROGRESS_PCT}}%;"></div>
+          </div>
+        </div>
+
+        <div class="lesson-sidebar__lessons">
+
+          <!-- ANTIGRAVITY: loop modules+lessons exactly like course.html.
+               Variants: done | active | upcoming | locked. -->
+
+          <div>
+            <div class="sidebar-lesson-label">{{MODULE_1_NAME}}</div>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot sidebar-lesson-dot--done" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <span class="sidebar-lesson-text">{{LESSON_1_1_TITLE}}</span>
+            </a>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot sidebar-lesson-dot--done" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <span class="sidebar-lesson-text">{{LESSON_1_2_TITLE}}</span>
+            </a>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot sidebar-lesson-dot--done" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <span class="sidebar-lesson-text">{{LESSON_1_3_TITLE}}</span>
+            </a>
+          </div>
+
+          <div>
+            <div class="sidebar-lesson-label">{{MODULE_2_NAME}}</div>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot sidebar-lesson-dot--done" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5,10 12,4"/></svg>
+              </div>
+              <span class="sidebar-lesson-text">{{LESSON_2_0_TITLE}}</span>
+            </a>
+            <!-- ACTIVE -->
+            <a href="lesson.html" class="sidebar-lesson-item active" aria-current="page">
+              <div class="sidebar-lesson-dot sidebar-lesson-dot--active" aria-hidden="true">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <span class="sidebar-lesson-text">{{LESSON_TITLE}}</span>
+            </a>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot">{{LESSON_2_2_INDEX}}</div>
+              <span class="sidebar-lesson-text">{{LESSON_2_2_TITLE}}</span>
+            </a>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot">{{LESSON_2_3_INDEX}}</div>
+              <span class="sidebar-lesson-text">{{LESSON_2_3_TITLE}}</span>
+            </a>
+          </div>
+
+          <div>
+            <div class="sidebar-lesson-label">{{MODULE_3_NAME}}</div>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot">{{LESSON_3_1_INDEX}}</div>
+              <span class="sidebar-lesson-text">{{LESSON_3_1_TITLE}}</span>
+            </a>
+            <a href="lesson.html" class="sidebar-lesson-item">
+              <div class="sidebar-lesson-dot">{{LESSON_3_2_INDEX}}</div>
+              <span class="sidebar-lesson-text">{{LESSON_3_2_TITLE}}</span>
+            </a>
+          </div>
+
+          <div>
+            <div class="sidebar-lesson-label">{{MODULE_FINAL_NAME}}</div>
+            <span class="sidebar-lesson-item" aria-disabled="true">
+              <div class="sidebar-lesson-dot" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <span class="sidebar-lesson-text">{{LESSON_FINAL_TITLE}} — Locked</span>
+            </span>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script src="academy.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    // ---- Mark complete (calls server in production) ----
+    const btn = document.getElementById('mark-complete-btn');
+    const banner = document.getElementById('xp-banner');
+    const label = btn ? btn.querySelector('.mark-complete-btn__label') : null;
+
+    if (btn) {
+      btn.addEventListener('click', () => {
+        // ANTIGRAVITY: replace with a fetch() to learndash_process_mark_complete
+        // or submit the LearnDash form. On success, run the UI changes below.
+        btn.classList.add('done');
+        btn.setAttribute('aria-disabled', 'true');
+        if (label) label.textContent = 'Completed';
+        if (banner) banner.classList.add('show');
+        // Do NOT scrollIntoView — banner sits above the fold once the user
+        // has watched the video, and scrolling away is jarring.
+      });
+    }
+
+    // ---- Play button placeholder ----
+    // ANTIGRAVITY: swap the placeholder for the embed iframe directly in HTML,
+    // or wire this click to inject the iframe and remove the placeholder.
+    const playBtn = document.getElementById('play-btn');
+    if (playBtn) {
+      playBtn.addEventListener('click', () => {
+        // demo only — production replaces the placeholder with the iframe
+        playBtn.setAttribute('aria-label', 'Pause video');
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
