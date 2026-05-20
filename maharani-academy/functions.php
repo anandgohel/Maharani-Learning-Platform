@@ -87,13 +87,13 @@ function mw_academy_favicon() {
     echo '<link rel="icon" href="' . esc_url( MW_ACADEMY_URL . '/assets/images/favicon.svg' ) . '" type="image/svg+xml">';
 }
 
-// ── Admin Bar Offset ──
-// Push the fixed nav down when WP admin bar is visible
-add_action( 'wp_head', 'mw_academy_admin_bar_fix' );
-function mw_academy_admin_bar_fix() {
-    if ( is_admin_bar_showing() && mw_is_academy_page() ) {
-        echo '<style>.mw-nav { top: 32px; } body { padding-top: calc(var(--nav-height) + 32px); } @media (max-width: 782px) { .mw-nav { top: 46px; } body { padding-top: calc(var(--nav-height) + 46px); } }</style>';
+// ── Hide WP Admin Bar on front-end ──
+add_filter( 'show_admin_bar', 'mw_academy_hide_admin_bar' );
+function mw_academy_hide_admin_bar( $show ) {
+    if ( ! is_admin() ) {
+        return false; // Hide admin bar on all front-end pages
     }
+    return $show;
 }
 
 /**

@@ -57,8 +57,19 @@ $course_title = get_the_title( $course_id );
 $badge_defs   = MWA_Gamification::get_badge_definitions();
 $earned       = $gdata['badges_earned'];
 
-get_header();
 ?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+<head>
+  <meta charset="<?php bloginfo('charset'); ?>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your Maharani Weddings Academy learning dashboard.">
+  <title>My Dashboard — Maharani Weddings Academy</title>
+  <link rel="icon" href="<?php echo esc_url( MW_ACADEMY_URL . '/assets/images/favicon.svg' ); ?>" type="image/svg+xml">
+  <link rel="stylesheet" href="<?php echo esc_url( MW_ACADEMY_URL . '/assets/css/academy.css' ); ?>?v=<?php echo MW_ACADEMY_VERSION; ?>">
+  <?php wp_head(); ?>
+</head>
+<body class="page-bg">
 
 <style>
 /* Dashboard page-specific styles from the UI kit */
@@ -326,4 +337,7 @@ get_header();
   </div>
 </main>
 
-<?php get_footer(); ?>
+<script src="<?php echo esc_url( MW_ACADEMY_URL . '/assets/js/academy.js' ); ?>?v=<?php echo MW_ACADEMY_VERSION; ?>"></script>
+<?php wp_footer(); ?>
+</body>
+</html>
