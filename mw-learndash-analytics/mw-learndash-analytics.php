@@ -2,8 +2,8 @@
 /**
  * Plugin Name: MW LearnDash Analytics
  * Plugin URI: https://maharaniweddings.com
- * Description: Analytics, usage tracking, and reporting for the Maharani Weddings LearnDash certification platform.
- * Version: 1.0.0
+ * Description: Analytics, usage tracking, and reporting for the Maharani Weddings LearnDash certification platform. Includes GA4, Microsoft Clarity, and Slack integrations.
+ * Version: 1.1.0
  * Author: Maharani Weddings Engineering
  * License: Proprietary
  * Text Domain: mw-learndash-analytics
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'MWA_VERSION', '1.0.0' );
+define( 'MWA_VERSION', '1.1.0' );
 define( 'MWA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MWA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -24,9 +24,12 @@ define( 'MWA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require_once MWA_PLUGIN_DIR . 'includes/class-mwa-db.php';
 require_once MWA_PLUGIN_DIR . 'includes/class-mwa-tracker.php';
 require_once MWA_PLUGIN_DIR . 'includes/class-mwa-api.php';
+require_once MWA_PLUGIN_DIR . 'includes/class-mwa-third-party.php';
+require_once MWA_PLUGIN_DIR . 'includes/class-mwa-slack.php';
 
 if ( is_admin() ) {
     require_once MWA_PLUGIN_DIR . 'admin/class-mwa-admin-dashboard.php';
+    require_once MWA_PLUGIN_DIR . 'admin/class-mwa-settings.php';
 }
 
 // ── Activation / Deactivation ──
@@ -47,9 +50,12 @@ function mwa_init() {
 
     MWA_Tracker::init();
     MWA_API::init();
+    MWA_Third_Party::init();
+    MWA_Slack::init();
 
     if ( is_admin() ) {
         MWA_Admin_Dashboard::init();
+        MWA_Settings::init();
     }
 }
 
