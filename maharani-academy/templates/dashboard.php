@@ -57,6 +57,23 @@ $course_title = get_the_title( $course_id );
 $badge_defs   = MWA_Gamification::get_badge_definitions();
 $earned       = $gdata['badges_earned'];
 
+// Strip ALL Astra/LearnDash styles — they conflict with Academy CSS
+add_action( 'wp_enqueue_scripts', function() {
+    global $wp_styles;
+    if ( $wp_styles ) {
+        foreach ( $wp_styles->registered as $handle => $style ) {
+            if ( strpos( $handle, 'astra' ) !== false ||
+                 strpos( $handle, 'learndash' ) !== false ||
+                 strpos( $handle, 'elementor' ) !== false ||
+                 $handle === 'wp-block-library' ) {
+                wp_dequeue_style( $handle );
+                wp_deregister_style( $handle );
+            }
+        }
+    }
+}, 999 );
+$css_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL . '/assets/css/academy.css' );
+$theme_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL );
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -65,8 +82,8 @@ $earned       = $gdata['badges_earned'];
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Your Maharani Weddings Academy learning dashboard.">
   <title>My Dashboard — Maharani Weddings Academy</title>
-  <link rel="icon" href="<?php echo esc_url( MW_ACADEMY_URL . '/assets/images/favicon.svg' ); ?>" type="image/svg+xml">
-  <link rel="stylesheet" href="<?php echo esc_url( MW_ACADEMY_URL . '/assets/css/academy.css' ); ?>?v=<?php echo MW_ACADEMY_VERSION; ?>">
+  <link rel="icon" href="<?php echo esc_url( $theme_url . '/assets/images/favicon.svg' ); ?>" type="image/svg+xml">
+  <link rel="stylesheet" href="<?php echo esc_url( $css_url ); ?>?v=<?php echo MW_ACADEMY_VERSION; ?>">
   <?php wp_head(); ?>
 </head>
 <body class="page-bg">
