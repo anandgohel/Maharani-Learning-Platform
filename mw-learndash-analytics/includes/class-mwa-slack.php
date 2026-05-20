@@ -11,9 +11,52 @@ class MWA_Slack {
     public static function init() {
         // Hook into key events for notifications
         add_action( 'wp_login', array( __CLASS__, 'on_login' ), 20, 2 );
+        add_action( 'user_register', array( __CLASS__, 'on_new_user' ), 20, 1 );
         add_action( 'learndash_course_completed', array( __CLASS__, 'on_course_completed' ), 20, 1 );
         add_action( 'learndash_lesson_completed', array( __CLASS__, 'on_lesson_completed' ), 20, 1 );
         add_action( 'learndash_quiz_completed', array( __CLASS__, 'on_quiz_completed' ), 20, 2 );
+
+        // Track when a user is enrolled in a course
+        add_action( 'learndash_update_course_access', array( __CLASS__, 'on_course_enrollment' ), 20, 4 );
+    }
+
+    /**
+     * Notify when a new user account is created.
+     */
+    public static function on_new_user( $user_id ) {
+        $user = get_userdata( $user_id );
+        if ( ! $user ) return;
+
+        $domain = substr( strrchr( $user->user_email, '@' ), 1 );
+
+        self::send( array(
+            'text' => "👤 *New User Registered!*\n• Name: {$user->display_name}\n• Email: `{$user->user_email}`\n• Company: `{$domain}`\n• Role: {$user->roles[0]}",
+            'icon_emoji' => ':bust_in_silhouette:',
+        ) );
+    }
+
+    /**
+     * Notify when a user is enrolled in a course.
+     */
+    public static function on_course_enrollment( $user_id, $course_id, $access_list, $remove ) {
+        if ( $remove ) return; // Only notify on enrollment, not removal
+
+        $user = get_userdata( $user_id );
+        if ( ! $user ) return;
+
+        $course_title = get_the_title( $course_id );
+
+        // Count total enrolled users
+        global $wpdb;
+        $total_enrolled = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(DISTINCT user_id) FROM {$wpdb->usermeta} WHERE meta_key = %s",
+            'course_' . $course_id . '_access_from'
+        ) );
+
+        self::send( array(
+            'text' => "📚 *Course Enrollment:* {$user->display_name} (`{$user->user_email}`) enrolled in *{$course_title}*\n👥 Total enrolled: {$total_enrolled} users",
+            'icon_emoji' => ':books:',
+        ) );
     }
 
     /**
