@@ -73,6 +73,20 @@ function mw_academy_override_templates( $filepath, $name, $args, $echo, $return_
     return $filepath;
 }
 
+// ── Route LearnDash post types to Academy templates ──
+add_filter( 'template_include', 'mw_academy_template_include', 999 );
+function mw_academy_template_include( $template ) {
+    if ( is_singular( 'sfwd-courses' ) ) {
+        $custom = MW_ACADEMY_DIR . '/templates/single-course.php';
+        if ( file_exists( $custom ) ) return $custom;
+    }
+    if ( is_singular( 'sfwd-lessons' ) || is_singular( 'sfwd-topic' ) ) {
+        $custom = MW_ACADEMY_DIR . '/templates/single-lesson.php';
+        if ( file_exists( $custom ) ) return $custom;
+    }
+    return $template;
+}
+
 // ── Page Template Registration ──
 add_filter( 'theme_page_templates', 'mw_academy_register_templates' );
 function mw_academy_register_templates( $templates ) {
@@ -91,9 +105,18 @@ function mw_academy_favicon() {
 add_filter( 'show_admin_bar', 'mw_academy_hide_admin_bar' );
 function mw_academy_hide_admin_bar( $show ) {
     if ( ! is_admin() ) {
-        return false; // Hide admin bar on all front-end pages
+        return false;
     }
     return $show;
+}
+
+// ── Redirect home → dashboard for logged-in users ──
+add_action( 'template_redirect', 'mw_academy_home_redirect' );
+function mw_academy_home_redirect() {
+    if ( is_front_page() && is_user_logged_in() ) {
+        wp_redirect( home_url( '/my-dashboard/' ) );
+        exit;
+    }
 }
 
 /**
