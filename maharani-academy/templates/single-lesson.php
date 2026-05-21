@@ -52,6 +52,42 @@ if ( function_exists( 'learndash_course_progress' ) && $course_id ) {
 // Lesson content
 $content = apply_filters( 'the_content', $lesson->post_content );
 
+// Video URL from LearnDash lesson settings
+$video_url = '';
+$lesson_meta = get_post_meta( $lesson_id, '_sfwd-lessons', true );
+if ( is_array( $lesson_meta ) && ! empty( $lesson_meta['sfwd-lessons_lesson_video_url'] ) ) {
+    $video_url = $lesson_meta['sfwd-lessons_lesson_video_url'];
+}
+
+// Convert Vimeo URL to embed URL
+$video_embed_url = '';
+if ( $video_url ) {
+    // Handle vimeo.com/XXXXX and player.vimeo.com/video/XXXXX
+    if ( preg_match( '/vimeo\.com\/(?:video\/)?(\d+)/', $video_url, $matches ) ) {
+        $video_embed_url = 'https://player.vimeo.com/video/' . $matches[1] . '?badge=0&autopause=0&player_id=0&app_id=58479';
+    } elseif ( strpos( $video_url, 'youtube.com' ) !== false || strpos( $video_url, 'youtu.be' ) !== false ) {
+        preg_match( '/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/', $video_url, $matches );
+        if ( ! empty( $matches[1] ) ) {
+            $video_embed_url = 'https://www.youtube.com/embed/' . $matches[1];
+        }
+    }
+}
+
+// Quizzes associated with this lesson
+$quizzes = array();
+if ( function_exists( 'learndash_get_lesson_quiz_list' ) ) {
+    $quiz_list = learndash_get_lesson_quiz_list( $lesson_id );
+    if ( is_array( $quiz_list ) ) {
+        foreach ( $quiz_list as $q ) {
+            $quizzes[] = array(
+                'id'    => $q['post']->ID,
+                'title' => $q['post']->post_title,
+                'url'   => get_permalink( $q['post']->ID ),
+            );
+        }
+    }
+}
+
 // Mark complete URL (LearnDash uses a form)
 $mark_complete_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'sfwd_nonce' ) : '';
 
@@ -126,6 +162,21 @@ $css_url   = $theme_url . '/assets/css/academy.css';
 .btn-mark-complete--pending{background:var(--pink-600);color:#fff}
 .btn-mark-complete--pending:hover{background:var(--pink-700);transform:translateY(-1px);box-shadow:var(--shadow-md)}
 .btn-mark-complete--done{background:var(--color-success-bg);color:var(--color-success);cursor:default}
+.lesson-video{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius-lg);background:#000;margin-bottom:0}
+.lesson-video iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.lesson-video__wrapper{border-bottom:1px solid var(--gray-100)}
+.quiz-section{margin-top:var(--space-6);background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-xl);overflow:hidden}
+.quiz-section__header{padding:var(--space-5) var(--space-6);border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:var(--space-3)}
+.quiz-section__title{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gray-900)}
+.quiz-section__icon{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-400),var(--gold-600));color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.quiz-section__body{padding:var(--space-5) var(--space-6)}
+.quiz-row{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);text-decoration:none;color:inherit;border:1px solid var(--gray-200);transition:all var(--transition-fast);margin-bottom:var(--space-3)}
+.quiz-row:hover{background:var(--gold-50);border-color:var(--gold-200);color:inherit;transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.quiz-row__icon{width:28px;height:28px;border-radius:50%;background:var(--gold-50);color:var(--gold-600);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.quiz-row__content{flex:1}
+.quiz-row__title{font-size:14px;font-weight:600;color:var(--gray-800)}
+.quiz-row__meta{font-size:11px;color:var(--gray-500);margin-top:2px}
+.quiz-row__arrow{color:var(--gray-400)}
 @media(max-width:900px){.lesson-layout{grid-template-columns:1fr}.lesson-sidebar{position:static;order:-1}.lesson-body__header,.lesson-body__content,.lesson-footer{padding-left:var(--space-5);padding-right:var(--space-5)}.lesson-layout{padding:var(--space-5) var(--space-5) var(--space-10)}}
   </style>
 </head>
@@ -157,6 +208,13 @@ $css_url   = $theme_url . '/assets/css/academy.css';
           </div>
           <h1 class="lesson-body__title"><?php echo esc_html( $lesson->post_title ); ?></h1>
         </div>
+        <?php if ( $video_embed_url ) : ?>
+        <div class="lesson-video__wrapper">
+          <div class="lesson-video">
+            <iframe src="<?php echo esc_url( $video_embed_url ); ?>" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="<?php echo esc_attr( $lesson->post_title ); ?>"></iframe>
+          </div>
+        </div>
+        <?php endif; ?>
         <div class="lesson-body__content">
           <?php echo $content; ?>
         </div>
@@ -196,6 +254,32 @@ $css_url   = $theme_url . '/assets/css/academy.css';
           </div>
         </div>
       </div>
+      <?php if ( ! empty( $quizzes ) ) : ?>
+      <div class="quiz-section">
+        <div class="quiz-section__header">
+          <div class="quiz-section__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <h2 class="quiz-section__title">Lesson Quiz</h2>
+        </div>
+        <div class="quiz-section__body">
+          <?php foreach ( $quizzes as $quiz ) : ?>
+          <a href="<?php echo esc_url( $quiz['url'] ); ?>" class="quiz-row">
+            <div class="quiz-row__icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="quiz-row__content">
+              <div class="quiz-row__title"><?php echo esc_html( $quiz['title'] ); ?></div>
+              <div class="quiz-row__meta">Test your knowledge · Earns <?php echo MWA_Gamification::XP_PER_QUIZ_PASS; ?> XP</div>
+            </div>
+            <div class="quiz-row__arrow">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+      <?php endif; ?>
     </div>
 
     <!-- Sidebar -->
