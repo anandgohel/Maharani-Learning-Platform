@@ -97,9 +97,27 @@ $css_url   = $theme_url . '/assets/css/academy.css';
 .quiz-progress__fill{height:100%;background:linear-gradient(90deg,var(--pink-500),var(--gold-500));border-radius:var(--radius-full);transition:width .5s cubic-bezier(.4,0,.2,1);position:relative;min-width:4px}
 .quiz-progress__fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:20px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4));border-radius:var(--radius-full);animation:progressShimmer 1.5s ease-in-out infinite}
 @keyframes progressShimmer{0%,100%{opacity:0}50%{opacity:1}}
+/* ── Celebration ── */
+#mwa-celebration-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998}
+.mwa-celebrate-overlay{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;z-index:99999;pointer-events:none;opacity:0;transition:opacity .6s ease}
+.mwa-celebrate-overlay.active{opacity:1}
+.mwa-celebrate-card{background:linear-gradient(135deg,#fff9f0 0%,#fff5e6 50%,#fff0f5 100%);border:2px solid var(--gold-400);border-radius:24px;padding:40px 48px;text-align:center;max-width:480px;box-shadow:0 20px 60px rgba(212,160,23,.3),0 0 80px rgba(196,38,110,.15);pointer-events:auto;transform:scale(.8);transition:transform .5s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.mwa-celebrate-overlay.active .mwa-celebrate-card{transform:scale(1)}
+.mwa-celebrate-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(212,160,23,.08),transparent,rgba(196,38,110,.06),transparent);animation:celebRotate 8s linear infinite}
+@keyframes celebRotate{to{transform:rotate(360deg)}}
+.mwa-celebrate-emoji{font-size:56px;margin-bottom:12px;animation:celebBounce 1s ease-in-out infinite alternate}
+@keyframes celebBounce{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-8px) scale(1.1)}}
+.mwa-celebrate-title{font-family:var(--font-display);font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--gold-600),var(--pink-600));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;position:relative}
+.mwa-celebrate-sub{font-size:15px;color:var(--gray-600);margin-bottom:20px;line-height:1.5}
+.mwa-celebrate-xp{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold-400),var(--gold-600));color:#fff;padding:10px 24px;border-radius:var(--radius-full);font-size:16px;font-weight:700;box-shadow:0 4px 16px rgba(212,160,23,.4);animation:celebPulse 2s ease-in-out infinite}
+@keyframes celebPulse{0%,100%{box-shadow:0 4px 16px rgba(212,160,23,.4)}50%{box-shadow:0 4px 24px rgba(212,160,23,.7)}}
+.mwa-celebrate-dismiss{margin-top:16px;font-size:13px;color:var(--gray-400);cursor:pointer;border:none;background:none;padding:4px 8px}
+.mwa-celebrate-dismiss:hover{color:var(--gray-600)}
+.mwa-sparkle{position:absolute;pointer-events:none;animation:sparkle 1.5s ease-out forwards}
+@keyframes sparkle{0%{opacity:1;transform:scale(0) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(180deg)}100%{opacity:0;transform:scale(.5) rotate(360deg)}}
 .page-bg{background:var(--gray-50)}
 .page-wrapper{padding-top:var(--nav-height)}
-@media(max-width:768px){.quiz-layout{padding:var(--space-5)}.quiz-card__header,.quiz-card__body,.quiz-card__footer,.quiz-progress{padding-left:var(--space-5);padding-right:var(--space-5)}}
+@media(max-width:768px){.quiz-layout{padding:var(--space-5)}.quiz-card__header,.quiz-card__body,.quiz-card__footer,.quiz-progress{padding-left:var(--space-5);padding-right:var(--space-5)}.mwa-celebrate-card{margin:16px;padding:28px 24px}.mwa-celebrate-title{font-size:22px}}
   </style>
 </head>
 <body class="page-bg">
@@ -250,6 +268,241 @@ $css_url   = $theme_url . '/assets/css/academy.css';
     });
     observer.observe(quizBody, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
   }
+})();
+</script>
+<script>
+/* ── Maharani Celebration Animation ── */
+(function(){
+  'use strict';
+  var triggered = false;
+
+  // Maharani color palette
+  var COLORS = [
+    '#D4A017', // Gold
+    '#FFD700', // Bright gold
+    '#C4266E', // Maharani pink
+    '#FF6B9D', // Light pink
+    '#FF8C00', // Marigold orange
+    '#E65100', // Deep orange
+    '#8B0000', // Deep red
+    '#FFE082', // Soft gold
+    '#F48FB1', // Rose
+    '#FFAB40', // Amber
+  ];
+
+  var SHAPES = ['circle', 'square', 'star', 'petal'];
+
+  function createCanvas() {
+    var c = document.createElement('canvas');
+    c.id = 'mwa-celebration-canvas';
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+    document.body.appendChild(c);
+    return c;
+  }
+
+  function launchConfetti() {
+    var canvas = createCanvas();
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var particleCount = 180;
+
+    // Resize handler
+    window.addEventListener('resize', function() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Create particles
+    for (var i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 3,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        shape: SHAPES[Math.floor(Math.random() * SHAPES.length)],
+        vx: (Math.random() - 0.5) * 4,
+        vy: Math.random() * 3 + 2,
+        rotation: Math.random() * 360,
+        rotationSpeed: (Math.random() - 0.5) * 8,
+        opacity: 1,
+        wobble: Math.random() * 10,
+        wobbleSpeed: Math.random() * 0.05 + 0.02,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    var startTime = Date.now();
+    var duration = 6000;
+
+    function drawStar(ctx, x, y, r, rot) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      ctx.beginPath();
+      for (var j = 0; j < 5; j++) {
+        ctx.lineTo(Math.cos((j * 4 * Math.PI / 5) - Math.PI/2) * r,
+                   Math.sin((j * 4 * Math.PI / 5) - Math.PI/2) * r);
+      }
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+
+    function drawPetal(ctx, x, y, r, rot) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r, r * 2.5, 0, 0, Math.PI * 2);
+      ctx.fill(); ctx.restore();
+    }
+
+    function animate() {
+      var elapsed = Date.now() - startTime;
+      if (elapsed > duration) {
+        canvas.remove();
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var fadeOut = elapsed > duration - 1500 ? 1 - (elapsed - (duration - 1500)) / 1500 : 1;
+
+      particles.forEach(function(p) {
+        p.x += p.vx + Math.sin(p.phase) * p.wobble * 0.1;
+        p.y += p.vy;
+        p.rotation += p.rotationSpeed;
+        p.phase += p.wobbleSpeed;
+        p.opacity = fadeOut;
+
+        if (p.y > canvas.height + 20) {
+          p.y = -20;
+          p.x = Math.random() * canvas.width;
+        }
+
+        ctx.globalAlpha = p.opacity * 0.9;
+        ctx.fillStyle = p.color;
+        var rad = p.rotation * Math.PI / 180;
+
+        if (p.shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.shape === 'square') {
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(rad);
+          ctx.fillRect(-p.r, -p.r, p.r * 2, p.r * 2);
+          ctx.restore();
+        } else if (p.shape === 'star') {
+          drawStar(ctx, p.x, p.y, p.r, rad);
+        } else {
+          drawPetal(ctx, p.x, p.y, p.r * 0.6, rad);
+        }
+      });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+
+  function showCelebration(score, total) {
+    // Create overlay
+    var overlay = document.createElement('div');
+    overlay.className = 'mwa-celebrate-overlay';
+    overlay.innerHTML = [
+      '<div class="mwa-celebrate-card">',
+      '  <div class="mwa-celebrate-emoji">🪔✨🎉</div>',
+      '  <div class="mwa-celebrate-title">Congratulations!</div>',
+      '  <div class="mwa-celebrate-sub">You passed with flying colors!<br>',
+      '    <strong>' + score + ' of ' + total + '</strong> questions answered correctly.</div>',
+      '  <div class="mwa-celebrate-xp">⭐ +100 XP Earned!</div>',
+      '  <button class="mwa-celebrate-dismiss" onclick="this.closest(\'.mwa-celebrate-overlay\').remove()">Click to continue</button>',
+      '</div>'
+    ].join('');
+    document.body.appendChild(overlay);
+
+    // Add sparkles to the card
+    var card = overlay.querySelector('.mwa-celebrate-card');
+    for (var i = 0; i < 12; i++) {
+      (function(delay) {
+        setTimeout(function() {
+          var sparkle = document.createElement('div');
+          sparkle.className = 'mwa-sparkle';
+          sparkle.style.left = Math.random() * 100 + '%';
+          sparkle.style.top = Math.random() * 100 + '%';
+          sparkle.style.fontSize = (Math.random() * 16 + 10) + 'px';
+          sparkle.textContent = ['✦','✧','❋','✺','✵'][Math.floor(Math.random() * 5)];
+          sparkle.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+          card.appendChild(sparkle);
+          setTimeout(function() { sparkle.remove(); }, 1500);
+        }, delay);
+      })(i * 200);
+    }
+
+    // Animate in
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        overlay.classList.add('active');
+      });
+    });
+
+    // Launch confetti
+    launchConfetti();
+
+    // Second burst after 1.5s
+    setTimeout(launchConfetti, 1500);
+
+    // Auto-dismiss after 8s
+    setTimeout(function() {
+      if (overlay.parentNode) {
+        overlay.style.transition = 'opacity 1s ease';
+        overlay.style.opacity = '0';
+        setTimeout(function() { overlay.remove(); }, 1000);
+      }
+    }, 8000);
+  }
+
+  function checkForPass() {
+    if (triggered) return;
+
+    // Look for the WPProQuiz results box
+    var resultsBox = document.querySelector('.wpProQuiz_results');
+    if (!resultsBox) return;
+    if (resultsBox.style.display === 'none' || resultsBox.offsetParent === null) return;
+
+    // Check if there's a Continue button (only shown on pass)
+    var continueBtn = resultsBox.querySelector('.wpProQuiz_button2[name="continue"], input[name="continue"]');
+    if (!continueBtn) {
+      // Alternative: check the results text for pass indicator
+      var resultText = resultsBox.textContent || '';
+      // If it says "You have reached X of Y" parse it
+      var match = resultText.match(/(\d+)\s+of\s+(\d+)\s+point/);
+      if (match) {
+        var score = parseInt(match[1]);
+        var total = parseInt(match[2]);
+        var pct = (score / total) * 100;
+        if (pct < 70) return; // Didn't pass (default threshold)
+      } else {
+        return;
+      }
+    }
+
+    // Parse score from results text
+    var txt = resultsBox.textContent || '';
+    var scoreMatch = txt.match(/(\d+)\s+of\s+(\d+)\s+Questions?\s+answered/);
+    var sc = scoreMatch ? parseInt(scoreMatch[1]) : '?';
+    var tot = scoreMatch ? parseInt(scoreMatch[2]) : '?';
+
+    triggered = true;
+    setTimeout(function() { showCelebration(sc, tot); }, 500);
+  }
+
+  // Watch for results appearing
+  var quizBody = document.querySelector('.quiz-card__body');
+  if (quizBody && typeof MutationObserver !== 'undefined') {
+    var obs = new MutationObserver(function() {
+      setTimeout(checkForPass, 300);
+    });
+    obs.observe(quizBody, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+  }
+
+  // Also check on page load (in case results are already shown)
+  setTimeout(checkForPass, 1000);
+  setTimeout(checkForPass, 2000);
 })();
 </script>
 <?php wp_footer(); ?>
