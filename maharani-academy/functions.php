@@ -84,6 +84,10 @@ function mw_academy_template_include( $template ) {
         $custom = MW_ACADEMY_DIR . '/templates/single-lesson.php';
         if ( file_exists( $custom ) ) return $custom;
     }
+    if ( is_singular( 'sfwd-quiz' ) ) {
+        $custom = MW_ACADEMY_DIR . '/templates/single-quiz.php';
+        if ( file_exists( $custom ) ) return $custom;
+    }
     return $template;
 }
 
