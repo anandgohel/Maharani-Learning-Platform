@@ -87,9 +87,19 @@ $css_url   = $theme_url . '/assets/css/academy.css';
 .quiz-card__body input[type="submit"]:hover,.quiz-card__body .wpProQuiz_button:hover,.quiz-card__body .wpProQuiz_button2:hover{background:var(--pink-700)!important;transform:translateY(-1px)}
 .quiz-card__footer{padding:var(--space-5) var(--space-8);border-top:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
 .quiz-xp-tag{display:inline-flex;align-items:center;gap:var(--space-2);font-size:13px;font-weight:600;color:var(--gold-600);background:var(--gold-50);padding:6px 14px;border-radius:var(--radius-full);border:1px solid var(--gold-200)}
+/* ── Quiz Progress Bar ── */
+.quiz-progress{padding:var(--space-4) var(--space-8);border-bottom:1px solid var(--gray-100);background:linear-gradient(135deg,#fdf8f0 0%,#fff9f0 100%)}
+.quiz-progress__top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)}
+.quiz-progress__label{font-size:14px;font-weight:600;color:var(--gray-700)}
+.quiz-progress__label span{color:var(--pink-600)}
+.quiz-progress__count{font-size:12px;font-weight:700;color:var(--gold-600);background:var(--gold-50);padding:2px 10px;border-radius:var(--radius-full);border:1px solid var(--gold-200)}
+.quiz-progress__track{width:100%;height:8px;background:var(--gray-100);border-radius:var(--radius-full);overflow:hidden;position:relative}
+.quiz-progress__fill{height:100%;background:linear-gradient(90deg,var(--pink-500),var(--gold-500));border-radius:var(--radius-full);transition:width .5s cubic-bezier(.4,0,.2,1);position:relative;min-width:4px}
+.quiz-progress__fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:20px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4));border-radius:var(--radius-full);animation:progressShimmer 1.5s ease-in-out infinite}
+@keyframes progressShimmer{0%,100%{opacity:0}50%{opacity:1}}
 .page-bg{background:var(--gray-50)}
 .page-wrapper{padding-top:var(--nav-height)}
-@media(max-width:768px){.quiz-layout{padding:var(--space-5)}.quiz-card__header,.quiz-card__body,.quiz-card__footer{padding-left:var(--space-5);padding-right:var(--space-5)}}
+@media(max-width:768px){.quiz-layout{padding:var(--space-5)}.quiz-card__header,.quiz-card__body,.quiz-card__footer,.quiz-progress{padding-left:var(--space-5);padding-right:var(--space-5)}}
   </style>
 </head>
 <body class="page-bg">
@@ -124,6 +134,16 @@ $css_url   = $theme_url . '/assets/css/academy.css';
           <h1 class="quiz-card__title"><?php echo esc_html( $quiz->post_title ); ?></h1>
         </div>
       </div>
+      <!-- Progress bar -->
+      <div class="quiz-progress" id="mwa-quiz-progress" style="display:none;">
+        <div class="quiz-progress__top">
+          <div class="quiz-progress__label">Completed Question <span id="mwa-q-current">1</span> of <span id="mwa-q-total">?</span></div>
+          <div class="quiz-progress__count" id="mwa-q-pct">0%</div>
+        </div>
+        <div class="quiz-progress__track">
+          <div class="quiz-progress__fill" id="mwa-q-fill" style="width:0%;"></div>
+        </div>
+      </div>
       <div class="quiz-card__body">
         <?php
         // Use WordPress loop to properly render LearnDash quiz
@@ -154,6 +174,85 @@ $css_url   = $theme_url . '/assets/css/academy.css';
 </main>
 
 <script src="<?php echo esc_url( $theme_url . '/assets/js/academy.js' ); ?>?v=<?php echo MW_ACADEMY_VERSION; ?>"></script>
+<script>
+(function(){
+  'use strict';
+  var progressBar = document.getElementById('mwa-quiz-progress');
+  var currentEl   = document.getElementById('mwa-q-current');
+  var totalEl     = document.getElementById('mwa-q-total');
+  var pctEl       = document.getElementById('mwa-q-pct');
+  var fillEl      = document.getElementById('mwa-q-fill');
+  if (!progressBar) return;
+
+  function updateProgress() {
+    var questions = document.querySelectorAll('.wpProQuiz_listItem');
+    var total = questions.length;
+    if (total === 0) return;
+
+    // Show the progress bar once we detect questions
+    progressBar.style.display = '';
+    totalEl.textContent = total;
+
+    // Find which question is currently visible
+    var current = 0;
+    questions.forEach(function(q, i) {
+      if (q.style.display !== 'none') current = i + 1;
+    });
+
+    // Count answered questions (any with a checked input)
+    var answered = 0;
+    questions.forEach(function(q) {
+      var checked = q.querySelector('input[type="radio"]:checked, input[type="checkbox"]:checked');
+      if (checked) answered++;
+    });
+
+    // Use whichever is higher: current question index or answered count
+    var progress = Math.max(current - 1, answered);
+    var pct = Math.round((progress / total) * 100);
+
+    currentEl.textContent = current;
+    pctEl.textContent = pct + '%';
+    fillEl.style.width = pct + '%';
+  }
+
+  // Initial check with delay (WPProQuiz initializes async)
+  var initInterval = setInterval(function() {
+    var questions = document.querySelectorAll('.wpProQuiz_listItem');
+    if (questions.length > 0) {
+      clearInterval(initInterval);
+      updateProgress();
+    }
+  }, 200);
+
+  // Watch for clicks on Next/Back/Check buttons
+  document.addEventListener('click', function(e) {
+    var btn = e.target;
+    if (btn.classList.contains('wpProQuiz_button') ||
+        btn.classList.contains('wpProQuiz_button2') ||
+        btn.tagName === 'INPUT' && btn.type === 'submit' ||
+        btn.name === 'next' || btn.name === 'back') {
+      setTimeout(updateProgress, 100);
+      setTimeout(updateProgress, 400);
+    }
+  }, true);
+
+  // Also watch for answer selections
+  document.addEventListener('change', function(e) {
+    if (e.target.type === 'radio' || e.target.type === 'checkbox') {
+      setTimeout(updateProgress, 50);
+    }
+  }, true);
+
+  // MutationObserver as fallback for any DOM changes in the quiz area
+  var quizBody = document.querySelector('.quiz-card__body');
+  if (quizBody && typeof MutationObserver !== 'undefined') {
+    var observer = new MutationObserver(function() {
+      setTimeout(updateProgress, 100);
+    });
+    observer.observe(quizBody, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+  }
+})();
+</script>
 <?php wp_footer(); ?>
 </body>
 </html>
