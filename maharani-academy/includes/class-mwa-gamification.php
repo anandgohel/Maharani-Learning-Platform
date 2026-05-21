@@ -216,6 +216,11 @@ class MWA_Gamification {
     }
 
     public static function on_quiz_completed( $quiz_data, $user ) {
+        $quiz_id = isset( $quiz_data['quiz'] ) ? $quiz_data['quiz']->ID : 0;
+        $lock_key = 'mwa_quiz_xp_' . $user->ID . '_' . $quiz_id;
+        if ( get_transient( $lock_key ) ) return; // Prevent duplicate fires
+        set_transient( $lock_key, 1, 60 );
+
         $pass       = isset( $quiz_data['pass'] ) ? $quiz_data['pass'] : false;
         $percentage = isset( $quiz_data['percentage'] ) ? $quiz_data['percentage'] : 0;
 
@@ -283,19 +288,21 @@ class MWA_Gamification {
     }
 
     /**
-     * Get greeting based on time of day.
+     * Get greeting (timezone-agnostic).
      */
     public static function get_greeting( $user_id ) {
         $user = get_userdata( $user_id );
         $name = $user ? $user->display_name : 'there';
         $first = explode( ' ', $name )[0];
 
-        $hour = (int) date( 'H' );
-        if ( $hour < 12 ) $greeting = "Good morning, {$first}";
-        elseif ( $hour < 17 ) $greeting = "Good afternoon, {$first}";
-        else $greeting = "Good evening, {$first}";
+        $data   = self::get_user_data( $user_id );
+        $streak = $data['streak'];
+        $xp     = $data['xp'];
 
-        return $greeting;
+        if ( $xp > 500 )      return "Welcome back, {$first}";
+        if ( $streak >= 3 )    return "Hey {$first}, great streak!";
+        if ( $xp > 0 )        return "Welcome back, {$first}";
+        return "Welcome, {$first}";
     }
 
     private static function slack_notify( $text ) {

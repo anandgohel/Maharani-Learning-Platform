@@ -136,6 +136,12 @@ class MWA_Slack {
         $settings = get_option( 'mwa_settings', array() );
         if ( empty( $settings['slack_notify_quiz'] ) ) return;
 
+        // Prevent duplicate Slack messages (LD fires this hook multiple times)
+        $quiz_id = isset( $quiz_data['quiz'] ) ? $quiz_data['quiz']->ID : 0;
+        $lock_key = 'mwa_quiz_slack_' . $user->ID . '_' . $quiz_id;
+        if ( get_transient( $lock_key ) ) return;
+        set_transient( $lock_key, 1, 60 );
+
         $percentage = isset( $quiz_data['percentage'] ) ? $quiz_data['percentage'] : 0;
         $pass = isset( $quiz_data['pass'] ) ? $quiz_data['pass'] : false;
         $quiz_title = isset( $quiz_data['quiz'] ) ? $quiz_data['quiz']->post_title : 'Quiz';

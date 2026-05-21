@@ -128,14 +128,13 @@ $theme_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL );
 .badge-section__title,.trail-card__title{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--gray-900)}
 .badge-section__body,.trail-card__body{padding:var(--space-5) var(--space-6)}
 .badge-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3)}
-.badge-thumb{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
-.badge-thumb__icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;transition:transform var(--transition-slow)}
-.badge-thumb__icon:hover{transform:scale(1.08) rotate(-3deg)}
-.badge-thumb__icon--earned{background:linear-gradient(135deg,var(--gold-400),var(--gold-600));box-shadow:0 3px 12px rgba(212,160,23,.4)}
-.badge-thumb__icon--earned-pink{background:linear-gradient(135deg,var(--pink-300),var(--pink-600));box-shadow:0 3px 12px rgba(200,0,107,.4)}
-.badge-thumb__icon--locked{background:var(--gray-100);border:2px dashed var(--gray-300);color:var(--gray-500)}
-.badge-thumb__label{font-size:10px;font-weight:600;color:var(--gray-700);line-height:1.2}
-.badge-thumb--locked .badge-thumb__label{color:var(--gray-500)}
+.badge-thumb{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:default}
+.badge-thumb__img{width:56px;height:56px;border-radius:50%;object-fit:cover;transition:transform var(--transition-slow);filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
+.badge-thumb:hover .badge-thumb__img{transform:scale(1.12) rotate(-3deg)}
+.badge-thumb--locked .badge-thumb__img{filter:grayscale(100%) opacity(.5);transform:none}
+.badge-thumb--locked:hover .badge-thumb__img{filter:grayscale(80%) opacity(.6);transform:scale(1.05)}
+.badge-thumb__label{font-size:10px;font-weight:600;color:var(--gray-700);line-height:1.2;max-width:70px}
+.badge-thumb--locked .badge-thumb__label{color:var(--gray-400)}
 .trail-step{display:flex;gap:var(--space-3);align-items:flex-start;padding-bottom:var(--space-4);position:relative}
 .trail-step:not(:last-child)::before{content:'';position:absolute;left:13px;top:28px;bottom:0;width:1.5px;background:var(--gray-200)}
 .trail-step--done:not(:last-child)::before{background:var(--color-success)}
@@ -237,8 +236,21 @@ $theme_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL );
         </div>
         <div class="continue-card__image" aria-hidden="true"></div>
       </a>
+      <?php elseif ( $has_progress && ! $current_lesson ) : ?>
+      <!-- COURSE COMPLETE STATE -->
+      <div class="section-header">
+        <div><h2 class="section-header__title">🎉 Course Complete!</h2><p class="section-header__subtitle">You've finished all the lessons — amazing work!</p></div>
+      </div>
+      <div class="empty-state" style="background:linear-gradient(135deg,#fff9f0 0%,#fff0f5 100%);border:2px solid var(--gold-200);">
+        <div class="empty-state__icon" style="background:linear-gradient(135deg,var(--gold-400),var(--gold-600));color:#fff;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3 class="empty-state__title">Well done, <?php echo esc_html( explode( ' ', $user->display_name )[0] ); ?>!</h3>
+        <p class="empty-state__desc">You've completed <strong><?php echo esc_html( $course_title ); ?></strong>. Review any lesson or retake quizzes to sharpen your skills.</p>
+        <a href="<?php echo esc_url( get_permalink( $course_id ) ); ?>" class="btn btn-primary btn--lg">Review course <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
       <?php else : ?>
-      <!-- EMPTY STATE -->
+      <!-- EMPTY STATE — new user -->
       <div class="section-header">
         <div><h2 class="section-header__title">Welcome to the Academy</h2><p class="section-header__subtitle">Your learning journey starts here</p></div>
       </div>
@@ -281,20 +293,13 @@ $theme_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL );
         <div class="badge-section__body">
           <div class="badge-row">
             <?php
-            $i = 0;
+            $badge_img_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL . '/assets/images/badges/' );
             foreach ( $badge_defs as $key => $badge ) :
               $is_earned = in_array( $key, $earned );
-              $color = ( $i % 2 === 0 ) ? 'earned' : 'earned-pink';
-              $i++;
+              $img_file = $is_earned ? $key . '.png' : 'locked.png';
             ?>
-            <div class="badge-thumb<?php echo ! $is_earned ? ' badge-thumb--locked' : ''; ?>">
-              <div class="badge-thumb__icon badge-thumb__icon--<?php echo $is_earned ? esc_attr( $color ) : 'locked'; ?>" title="<?php echo esc_attr( $badge['name'] ); ?>">
-                <?php if ( $is_earned ) : ?>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8.21 13.89-1.21 7.11L12 18l5 3-1.21-7.11"/></svg>
-                <?php else : ?>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <?php endif; ?>
-              </div>
+            <div class="badge-thumb<?php echo ! $is_earned ? ' badge-thumb--locked' : ''; ?>" title="<?php echo esc_attr( $is_earned ? $badge['name'] . ' — ' . $badge['desc'] : 'Locked: ' . $badge['desc'] ); ?>">
+              <img src="<?php echo esc_url( $badge_img_url . $img_file ); ?>" alt="<?php echo esc_attr( $badge['name'] ); ?>" class="badge-thumb__img" width="56" height="56" loading="lazy">
               <span class="badge-thumb__label"><?php echo $is_earned ? esc_html( $badge['name'] ) : 'Locked'; ?></span>
             </div>
             <?php endforeach; ?>
