@@ -49,58 +49,17 @@ if ( function_exists( 'learndash_course_progress' ) && $course_id ) {
     $progress_pct = isset( $prog['percentage'] ) ? $prog['percentage'] : 0;
 }
 
-// Lesson content
-$content = apply_filters( 'the_content', $lesson->post_content );
-
-// Video URL from LearnDash lesson settings
-$video_url = '';
-$lesson_meta = get_post_meta( $lesson_id, '_sfwd-lessons', true );
-if ( is_array( $lesson_meta ) && ! empty( $lesson_meta['sfwd-lessons_lesson_video_url'] ) ) {
-    $video_url = $lesson_meta['sfwd-lessons_lesson_video_url'];
-}
-
-// Convert Vimeo URL to embed URL
-$video_embed_url = '';
-if ( $video_url ) {
-    // Handle vimeo.com/XXXXX and player.vimeo.com/video/XXXXX
-    if ( preg_match( '/vimeo\.com\/(?:video\/)?(\d+)/', $video_url, $matches ) ) {
-        $video_embed_url = 'https://player.vimeo.com/video/' . $matches[1] . '?badge=0&autopause=0&player_id=0&app_id=58479';
-    } elseif ( strpos( $video_url, 'youtube.com' ) !== false || strpos( $video_url, 'youtu.be' ) !== false ) {
-        preg_match( '/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]+)/', $video_url, $matches );
-        if ( ! empty( $matches[1] ) ) {
-            $video_embed_url = 'https://www.youtube.com/embed/' . $matches[1];
-        }
-    }
-}
-
-// Quizzes associated with this lesson
-$quizzes = array();
-if ( function_exists( 'learndash_get_lesson_quiz_list' ) ) {
-    $quiz_list = learndash_get_lesson_quiz_list( $lesson_id );
-    if ( is_array( $quiz_list ) ) {
-        foreach ( $quiz_list as $q ) {
-            $quizzes[] = array(
-                'id'    => $q['post']->ID,
-                'title' => $q['post']->post_title,
-                'url'   => get_permalink( $q['post']->ID ),
-            );
-        }
-    }
-}
-
-// Mark complete URL (LearnDash uses a form)
-$mark_complete_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'sfwd_nonce' ) : '';
-
 $dash_url   = home_url( '/my-dashboard/' );
 $course_url = $course_id ? get_permalink( $course_id ) : $dash_url;
 
-// Strip conflicting styles
+// Strip ONLY Astra/Elementor styles — keep LearnDash (needed for video tracking + quizzes)
 add_action( 'wp_enqueue_scripts', function() {
     global $wp_styles;
     if ( $wp_styles ) {
         foreach ( $wp_styles->registered as $handle => $style ) {
-            if ( strpos( $handle, 'astra' ) !== false || strpos( $handle, 'learndash' ) !== false ||
-                 strpos( $handle, 'elementor' ) !== false || $handle === 'wp-block-library' ) {
+            if ( strpos( $handle, 'astra' ) !== false ||
+                 strpos( $handle, 'elementor' ) !== false ||
+                 $handle === 'wp-block-library' ) {
                 wp_dequeue_style( $handle ); wp_deregister_style( $handle );
             }
         }
@@ -136,6 +95,17 @@ $css_url   = $theme_url . '/assets/css/academy.css';
 .lesson-body__content ul,.lesson-body__content ol{margin-bottom:var(--space-4);padding-left:var(--space-5)}
 .lesson-body__content li{font-size:15px;line-height:1.7;color:var(--gray-700);margin-bottom:var(--space-2)}
 .lesson-body__content img,.lesson-body__content video,.lesson-body__content iframe{max-width:100%;border-radius:var(--radius-lg);margin:var(--space-4) 0}
+.lesson-body__ld-content{padding:var(--space-4) var(--space-8)}
+.lesson-body__ld-content .ld-video{margin:0 calc(-1 * var(--space-8));border-bottom:1px solid var(--gray-100)}
+.lesson-body__ld-content .ld-video .ld-video-player{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}
+.lesson-body__ld-content .ld-video .ld-video-player iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.lesson-body__ld-content .learndash_mark_complete_button,.lesson-body__ld-content #sfwd-mark-complete input[type=submit]{background:var(--pink-600)!important;color:#fff!important;border:none!important;padding:10px 24px!important;border-radius:var(--radius-full)!important;font-size:14px!important;font-weight:600!important;cursor:pointer;transition:all var(--transition-fast)!important}
+.lesson-body__ld-content .learndash_mark_complete_button:hover,.lesson-body__ld-content #sfwd-mark-complete input[type=submit]:hover{background:var(--pink-700)!important;transform:translateY(-1px)}
+.lesson-body__ld-content .ld-table-list{border:1px solid var(--gray-200);border-radius:var(--radius-lg);overflow:hidden;margin:var(--space-4) 0}
+.lesson-body__ld-content .ld-table-list .ld-table-list-header{background:var(--gray-50);padding:var(--space-3) var(--space-4);font-weight:600;font-size:14px}
+.lesson-body__ld-content .ld-table-list .ld-table-list-item{padding:var(--space-3) var(--space-4);border-top:1px solid var(--gray-100)}
+.lesson-body__ld-content .ld-table-list .ld-table-list-item a{color:var(--pink-600);text-decoration:none;font-weight:500}
+.lesson-body__ld-content .ld-table-list .ld-table-list-item a:hover{text-decoration:underline}
 .lesson-footer{padding:var(--space-6) var(--space-8);border-top:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-4)}
 .lesson-nav-btn{display:inline-flex;align-items:center;gap:var(--space-2);font-size:13px;font-weight:600;color:var(--gray-600);text-decoration:none;padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);transition:all var(--transition-fast)}
 .lesson-nav-btn:hover{background:var(--gray-50);color:var(--pink-600)}
@@ -208,78 +178,77 @@ $css_url   = $theme_url . '/assets/css/academy.css';
           </div>
           <h1 class="lesson-body__title"><?php echo esc_html( $lesson->post_title ); ?></h1>
         </div>
-        <?php if ( $video_embed_url ) : ?>
-        <div class="lesson-video__wrapper">
-          <div class="lesson-video">
-            <iframe src="<?php echo esc_url( $video_embed_url ); ?>" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="<?php echo esc_attr( $lesson->post_title ); ?>"></iframe>
-          </div>
-        </div>
-        <?php endif; ?>
-        <div class="lesson-body__content">
-          <?php echo $content; ?>
-        </div>
-        <div class="lesson-footer">
-          <div>
-            <?php if ( $prev_lesson ) : ?>
-            <a href="<?php echo esc_url( get_permalink( $prev_lesson->ID ) ); ?>" class="lesson-nav-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              Previous
-            </a>
-            <?php endif; ?>
-          </div>
-          <div style="display:flex;align-items:center;gap:var(--space-3);">
-            <?php if ( $is_complete ) : ?>
-              <span class="btn-mark-complete btn-mark-complete--done">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                Completed
-              </span>
-            <?php else : ?>
-              <form method="post" action="<?php echo esc_url( get_permalink() ); ?>">
-                <input type="hidden" name="sfwd_mark_complete" value="1">
-                <input type="hidden" name="post" value="<?php echo esc_attr( $lesson_id ); ?>">
-                <input type="hidden" name="course_id" value="<?php echo esc_attr( $course_id ); ?>">
-                <?php wp_nonce_field( 'sfwd_mark_complete_' . $user_id . '_' . $lesson_id ); ?>
-                <button type="submit" class="btn-mark-complete btn-mark-complete--pending">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-                  Mark as complete
-                </button>
-              </form>
-            <?php endif; ?>
-            <?php if ( $next_lesson ) : ?>
-            <a href="<?php echo esc_url( get_permalink( $next_lesson->ID ) ); ?>" class="lesson-nav-btn" style="color:var(--pink-600);">
-              Next
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <?php endif; ?>
-          </div>
+        <!-- Use LearnDash's native lesson template for video, content, quizzes, mark-complete -->
+        <div class="lesson-body__ld-content">
+          <?php
+          // LearnDash's lesson.php template handles everything:
+          // video player (with tracking), content, mark complete, quiz list, navigation
+          if ( have_posts() ) {
+              while ( have_posts() ) {
+                  the_post();
+
+                  // Get all variables LearnDash expects
+                  $ld_course_id = learndash_get_course_id( $lesson_id );
+                  $ld_user_id   = $user_id;
+
+                  // Get content with LearnDash's the_content filter (injects video)
+                  $ld_content = apply_filters( 'the_content', get_the_content() );
+
+                  // Get lesson variables LD expects
+                  $lesson_settings           = learndash_get_setting( $lesson_id );
+                  $lesson_progression_enabled = learndash_lesson_progression_enabled( $ld_course_id );
+                  $previous_lesson_completed = true;
+                  $show_content              = true;
+                  $logged_in                 = is_user_logged_in();
+                  $has_access                = sfwd_lms_has_access( $ld_course_id, $ld_user_id );
+                  $materials                 = learndash_get_setting( $lesson_id, 'lesson_materials' );
+                  $all_quizzes_completed     = true;
+
+                  // Check lesson progression
+                  if ( $lesson_progression_enabled ) {
+                      $previous_lesson_completed = learndash_user_progress_is_step_complete( $ld_user_id, $ld_course_id, $lesson_id );
+                      if ( ! $previous_lesson_completed ) {
+                          $prev_step_id = learndash_user_progress_get_previous_incomplete_step( $ld_user_id, $ld_course_id, $lesson_id );
+                          if ( empty( $prev_step_id ) || $prev_step_id == $lesson_id ) {
+                              $previous_lesson_completed = true;
+                          }
+                      }
+                      $show_content = $previous_lesson_completed;
+                  }
+
+                  // Get topics and quizzes for this lesson
+                  $topics  = learndash_topic_dots( $lesson_id, false, 'array', $ld_user_id, $ld_course_id );
+                  if ( ! is_array( $topics ) ) $topics = array();
+                  $quizzes = learndash_get_lesson_quiz_list( $lesson_id, $ld_user_id, $ld_course_id );
+                  if ( ! is_array( $quizzes ) ) $quizzes = array();
+
+                  // Render LearnDash's native lesson template
+                  learndash_get_template_part(
+                      'lesson.php',
+                      array(
+                          'course_id'                  => $ld_course_id,
+                          'course_settings'            => learndash_get_setting( $ld_course_id ),
+                          'user_id'                    => $ld_user_id,
+                          'post'                       => get_post(),
+                          'content'                    => $ld_content,
+                          'materials'                  => $materials,
+                          'topics'                     => $topics,
+                          'quizzes'                    => $quizzes,
+                          'lesson_settings'            => $lesson_settings,
+                          'lesson_progression_enabled' => $lesson_progression_enabled,
+                          'previous_lesson_completed'  => $previous_lesson_completed,
+                          'show_content'               => $show_content,
+                          'all_quizzes_completed'      => $all_quizzes_completed,
+                          'logged_in'                  => $logged_in,
+                          'has_access'                 => $has_access,
+                      ),
+                      true
+                  );
+              }
+          }
+          ?>
         </div>
       </div>
-      <?php if ( ! empty( $quizzes ) ) : ?>
-      <div class="quiz-section">
-        <div class="quiz-section__header">
-          <div class="quiz-section__icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </div>
-          <h2 class="quiz-section__title">Lesson Quiz</h2>
-        </div>
-        <div class="quiz-section__body">
-          <?php foreach ( $quizzes as $quiz ) : ?>
-          <a href="<?php echo esc_url( $quiz['url'] ); ?>" class="quiz-row">
-            <div class="quiz-row__icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            </div>
-            <div class="quiz-row__content">
-              <div class="quiz-row__title"><?php echo esc_html( $quiz['title'] ); ?></div>
-              <div class="quiz-row__meta">Test your knowledge · Earns <?php echo MWA_Gamification::XP_PER_QUIZ_PASS; ?> XP</div>
-            </div>
-            <div class="quiz-row__arrow">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </div>
-          </a>
-          <?php endforeach; ?>
-        </div>
-      </div>
-      <?php endif; ?>
     </div>
 
     <!-- Sidebar -->
