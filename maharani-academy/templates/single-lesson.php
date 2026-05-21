@@ -96,9 +96,8 @@ $css_url   = $theme_url . '/assets/css/academy.css';
 .lesson-body__content li{font-size:15px;line-height:1.7;color:var(--gray-700);margin-bottom:var(--space-2)}
 .lesson-body__content img,.lesson-body__content video,.lesson-body__content iframe{max-width:100%;border-radius:var(--radius-lg);margin:var(--space-4) 0}
 .lesson-body__ld-content{padding:var(--space-4) var(--space-8)}
-.lesson-body__ld-content .ld-video{margin:0 calc(-1 * var(--space-8));border-bottom:1px solid var(--gray-100)}
-.lesson-body__ld-content .ld-video .ld-video-player{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}
-.lesson-body__ld-content .ld-video .ld-video-player iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.lesson-body__ld-content .ld-video{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin:0 calc(-1 * var(--space-8));border-bottom:1px solid var(--gray-100);background:#000}
+.lesson-body__ld-content .ld-video iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .lesson-body__ld-content .learndash_mark_complete_button,.lesson-body__ld-content #sfwd-mark-complete input[type=submit]{background:var(--pink-600)!important;color:#fff!important;border:none!important;padding:10px 24px!important;border-radius:var(--radius-full)!important;font-size:14px!important;font-weight:600!important;cursor:pointer;transition:all var(--transition-fast)!important}
 .lesson-body__ld-content .learndash_mark_complete_button:hover,.lesson-body__ld-content #sfwd-mark-complete input[type=submit]:hover{background:var(--pink-700)!important;transform:translateY(-1px)}
 .lesson-body__ld-content .ld-table-list{border:1px solid var(--gray-200);border-radius:var(--radius-lg);overflow:hidden;margin:var(--space-4) 0}
