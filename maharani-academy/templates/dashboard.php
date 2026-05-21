@@ -48,6 +48,17 @@ if ( function_exists( 'learndash_get_lesson_list' ) ) {
         }
     }
 }
+// Override with per-lesson counts if the LD API returned nothing (enrollment edge case)
+$actual_done  = 0;
+$actual_total = count( $lessons );
+foreach ( $lessons as $l ) {
+    if ( $l['complete'] ) $actual_done++;
+}
+if ( $actual_total > 0 && ( $lessons_total === 0 || $lessons_done === 0 ) ) {
+    $lessons_total = $actual_total;
+    $lessons_done  = $actual_done;
+    $progress_pct  = round( ( $actual_done / $actual_total ) * 100 );
+}
 
 $has_progress = $lessons_done > 0;
 $greeting     = MWA_Gamification::get_greeting( $user_id );
