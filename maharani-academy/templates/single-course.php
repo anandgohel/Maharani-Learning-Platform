@@ -162,7 +162,7 @@ $css_url   = $theme_url . '/assets/css/academy.css';
           </div>
           <div class="course-hero__meta-item">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            Earns <?php echo MWA_Gamification::XP_PER_COURSE; ?> XP + Badge
+            Earns <?php echo MWA_Gamification::XP_COURSE_BONUS; ?> XP + Badge
           </div>
         </div>
         <div class="course-hero__actions">
@@ -304,7 +304,7 @@ $css_url   = $theme_url . '/assets/css/academy.css';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
             <div>
-              <div style="font-size:13px;font-weight:600;color:var(--gray-800);">+<?php echo MWA_Gamification::XP_PER_COURSE; ?> XP</div>
+              <div style="font-size:13px;font-weight:600;color:var(--gray-800);">+<?php echo MWA_Gamification::XP_COURSE_BONUS; ?> XP</div>
               <div style="font-size:11px;color:var(--gray-600);">Advances your Academy level</div>
             </div>
           </div>
