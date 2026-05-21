@@ -294,12 +294,13 @@ $theme_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL );
           <div class="badge-row">
             <?php
             $badge_img_url = str_replace( 'http://', 'https://', MW_ACADEMY_URL . '/assets/images/badges/' );
+            $badge_ver = '?v=2';
             foreach ( $badge_defs as $key => $badge ) :
               $is_earned = in_array( $key, $earned );
               $img_file = $is_earned ? $key . '.png' : 'locked.png';
             ?>
             <div class="badge-thumb<?php echo ! $is_earned ? ' badge-thumb--locked' : ''; ?>" title="<?php echo esc_attr( $is_earned ? $badge['name'] . ' — ' . $badge['desc'] : 'Locked: ' . $badge['desc'] ); ?>">
-              <img src="<?php echo esc_url( $badge_img_url . $img_file ); ?>" alt="<?php echo esc_attr( $badge['name'] ); ?>" class="badge-thumb__img" width="56" height="56" loading="lazy">
+              <img src="<?php echo esc_url( $badge_img_url . $img_file . $badge_ver ); ?>" alt="<?php echo esc_attr( $badge['name'] ); ?>" class="badge-thumb__img" width="56" height="56" loading="lazy">
               <span class="badge-thumb__label"><?php echo $is_earned ? esc_html( $badge['name'] ) : 'Locked'; ?></span>
             </div>
             <?php endforeach; ?>
