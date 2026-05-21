@@ -206,9 +206,8 @@ $css_url   = $theme_url . '/assets/css/academy.css';
       if (checked) answered++;
     });
 
-    // Use whichever is higher: current question index or answered count
-    var progress = Math.max(current - 1, answered);
-    var pct = Math.round((progress / total) * 100);
+    // Percentage = current question / total
+    var pct = Math.round((current / total) * 100);
 
     currentEl.textContent = current;
     pctEl.textContent = pct + '%';
